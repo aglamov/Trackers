@@ -18,5 +18,4 @@ class TrackerRecordStore: CoreDataStore {
         return []
     }
     
-    // Другие методы для работы с записями трекера
 }
