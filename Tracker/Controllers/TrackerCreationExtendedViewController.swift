@@ -316,6 +316,13 @@ final class TrackerCreationExtendedViewController: UIViewController  {
             TrackerCategoryManager.shared.addNewTrackerCategories(newCategory)
         }
         
+        let trackerStore = TrackerStore()
+           
+           // Вызываем метод createTracker() для сохранения нового трекера в Core Data
+        trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned)
+        
+        
+        
         let tabBarController = TabBarController.shared
         tabBarController.navigationItem.hidesBackButton = true
         navigationController?.pushViewController(tabBarController, animated: true)

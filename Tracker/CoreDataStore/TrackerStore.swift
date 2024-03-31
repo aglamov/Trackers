@@ -7,10 +7,25 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 class TrackerStore: CoreDataStore {
-    func createTracker() {
-        // Ваш код для создания трекера в Core Data
+    func createTracker(id: UUID, name: String, color: UIColor, emoji: String, schedule: [Int], isPinned: Bool) {
+        
+        let context = persistentContainer.viewContext
+        let newTracker = TrackerCoreData(context: context)
+        newTracker.id = id
+        newTracker.name = name
+        //  newTracker.color = color
+        //  newTracker.emoji = emoji
+        //  newTracker.emoji =
+        
+        do {
+            try context.save()
+            print("Новый трекер успешно создан и сохранен в базе данных.")
+        } catch {
+            print("Ошибка при сохранении нового трекера: \(error.localizedDescription)")
+        }
     }
     
     func fetchTrackers() -> [TrackerCoreData] {

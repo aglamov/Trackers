@@ -19,7 +19,7 @@ class TrackerManager {
     func findTracker(for id: UUID) -> Tracker? {
         return trackers.first(where: { $0.id == id })
     }
-
+    
 }
 
 class TrackerCategoryManager {
@@ -49,16 +49,16 @@ class TrackerRecordManager {
     func addTrackerRecord(id: UUID, date: Date) {
         let trackerRecord = TrackerRecord(id: id, date: date)
         completedTrackers.insert(trackerRecord)
-        print("Добавлен новый элемент \(completedTrackers)")
-        print("Количество элементов массива стало \(completedTrackers.count)")
+        //      print("Добавлен новый элемент \(completedTrackers)")
+        //     print("Количество элементов массива стало \(completedTrackers.count)")
     }
     
     func removeTrackerRecord(id: UUID, date: Date) {
         let trackerRecordToRemove = completedTrackers.first { $0.id == id && Calendar.current.isDate($0.date, inSameDayAs: date) }
         if let trackerRecordToRemove = trackerRecordToRemove {
             completedTrackers.remove(trackerRecordToRemove)
-            print("Удален элемент \(completedTrackers)")
-            print("Количество элементов массива стало \(completedTrackers.count)")           
+            //            print("Удален элемент \(completedTrackers)")
+            //            print("Количество элементов массива стало \(completedTrackers.count)")           
         }
     }
     
@@ -67,8 +67,8 @@ class TrackerRecordManager {
     }
     
     func countTrackerRecords(for id: UUID) -> Int {
-            return completedTrackers.filter { $0.id == id }.count
-        }
+        return completedTrackers.filter { $0.id == id }.count
+    }
 }
 
 

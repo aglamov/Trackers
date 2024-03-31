@@ -208,13 +208,13 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         guard let trackerID = cell.id else {
             return
         }
-        print("Обрабатываем трекер \(trackerID)")
+        //       print("Обрабатываем трекер \(trackerID)")
         let recordCount = TrackerRecordManager.shared.countTrackerRecords(for: trackerID)
-        print("Количество записей с таким трекером \(recordCount)")
+        //       print("Количество записей с таким трекером \(recordCount)")
         cell.countLabel.text = "\(recordCount) \(dayString(for: recordCount))"
         
         let isCompleted = isTrackerCompleted(trackerID, date: currentDate)
-        print("На дату \(currentDate) трекер выполнен \(isCompleted)")
+        //      print("На дату \(currentDate) трекер выполнен \(isCompleted)")
         cell.addButton.isSelected = isCompleted
     }
     
@@ -247,7 +247,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
             return "дней"
         }
     }
-
+    
     @objc private func addButtonTapped() {
         let trackerCreation = TrackerCreationViewController()
         let navController = UINavigationController(rootViewController: trackerCreation)
@@ -256,7 +256,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     
     @objc private func setDateForTrackers(_ sender: UIDatePicker) {
         currentDate = sender.date
-        print ("Обрабатывает дату \(currentDate)")
+        // print ("Обрабатывает дату \(currentDate)")
         let weekday = Calendar.current.component(.weekday, from: currentDate)
         visibleTrackerCategories = TrackerCategoryManager.shared.trackerCategories.filter { category in
             category.trackers.contains { tracker in
@@ -272,14 +272,14 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         }
         
         for category in visibleTrackerCategories {
-                for tracker in category.trackers {
-                    guard let cell = findCell(for: tracker) else {
-                        continue
-                    }
-                    print(cell)
+            for tracker in category.trackers {
+                guard let cell = findCell(for: tracker) else {
+                    continue
                 }
+                //      print(cell)
             }
-
+        }
+        
         trackersCollectionView.reloadData()
     }
     
@@ -293,7 +293,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         }
         return nil
     }
-
+    
 }
 
 
