@@ -9,7 +9,7 @@
         <relationship name="trackers" toMany="YES" deletionRule="Nullify" destinationEntity="Trackers" inverseName="trackerRecords" inverseEntity="Trackers"/>
     </entity>
     <entity name="Trackers" representedClassName="TrackerCoreData" syncable="YES" codeGenerationType="class">
-        <attribute name="color" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformerName"/>
+        <attribute name="color" attributeType="Transformable" valueTransformerName="ColorTransformer"/>
         <attribute name="emoji" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isPinned" attributeType="Boolean" usesScalarValueType="NO"/>

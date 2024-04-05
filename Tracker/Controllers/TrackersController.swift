@@ -35,6 +35,8 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
             let tracker = trackersArray[indexPath.item]
             cell.id = tracker.id
             cell.titleLabel.text = tracker.name
+            cell.containerView.backgroundColor = tracker.color as? UIColor
+            cell.
             cell.delegate = self
             cell.currentDate = currentDate
             cell.updateButtonAvailability(for: currentDate)
@@ -163,7 +165,6 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     
     override func viewDidLoad() {
         super.viewDidLoad()
-     //   coreDataStore.deleteAllData()
         setupTrackersScreen()
         trackersCollectionView.delegate = self
         currentDate = Date()

@@ -20,7 +20,7 @@ class TrackerCell: UICollectionViewCell {
     let containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .yGreen
+      //  view.backgroundColor = .yGreen
         view.layer.cornerRadius = 10
         return view
     }()

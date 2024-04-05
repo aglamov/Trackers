@@ -16,7 +16,7 @@ class TrackerStore: CoreDataStore {
         let newTracker = TrackerCoreData(context: context)
         newTracker.id = id
         newTracker.name = name
-    //    newTracker.color = color
+        newTracker.color = color
         newTracker.emoji = emoji
         newTracker.isPinned = false
      //   newTracker.schedule = schedule as NSObject
