@@ -32,4 +32,38 @@ class CoreDataStore {
             }
         }
     }
+    
+    func deleteAllData() {
+        let context = persistentContainer.viewContext
+        let fetchRequestTrackerCategory: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "TrackerCategory")
+        
+        do {
+            let objects = try context.fetch(fetchRequestTrackerCategory)
+            for object in objects {
+                guard let objectData = object as? NSManagedObject else { continue }
+                context.delete(objectData)
+            }
+            
+            try context.save()
+            print("Все данные удалены из базы данных TrackerCategory.")
+        } catch {
+            print("Ошибка при удалении данных: \(error.localizedDescription)")
+        }
+        
+        let fetchRequestTrackers: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Trackers")
+        
+        do {
+            let objects = try context.fetch(fetchRequestTrackers)
+            for object in objects {
+                guard let objectData = object as? NSManagedObject else { continue }
+                context.delete(objectData)
+            }
+            
+            try context.save()
+            print("Все данные удалены из базы данных Trackers.")
+        } catch {
+            print("Ошибка при удалении данных: \(error.localizedDescription)")
+        }
+    }
+    
 }

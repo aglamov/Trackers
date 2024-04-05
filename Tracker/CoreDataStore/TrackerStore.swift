@@ -16,9 +16,10 @@ class TrackerStore: CoreDataStore {
         let newTracker = TrackerCoreData(context: context)
         newTracker.id = id
         newTracker.name = name
-        //  newTracker.color = color
-        //  newTracker.emoji = emoji
-        //  newTracker.emoji =
+    //    newTracker.color = color
+        newTracker.emoji = emoji
+        newTracker.isPinned = false
+     //   newTracker.schedule = schedule as NSObject
         
         do {
             try context.save()
@@ -28,10 +29,16 @@ class TrackerStore: CoreDataStore {
         }
     }
     
-    func fetchTrackers() -> [TrackerCoreData] {
-        // Ваш код для извлечения трекеров из Core Data
-        return []
-    }
-    
-    // Другие методы для работы с трекерами
+    func fetchTracker(with id: UUID) -> TrackerCoreData? {
+            let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            
+            do {
+                let trackers = try persistentContainer.viewContext.fetch(fetchRequest)
+                return trackers.first
+            } catch {
+                print("Error fetching tracker with id \(id): \(error.localizedDescription)")
+                return nil
+            }
+        }
 }

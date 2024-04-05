@@ -301,27 +301,27 @@ final class TrackerCreationExtendedViewController: UIViewController  {
     @objc private func saveButtonTapped() {
         let id = UUID()
         let name = trackerNameTextField.text ?? ""
-        let color = UIColor.red
-        let emoji = "💪"
+        let color = colors[selectedColorIndexPath!.item]
+        let emoji = emojis[selectedEmojiIndexPath!.item]
         let schedule: [Int] = selectedIndexes
         let isPinned = false
         
         let newTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned)
-        TrackerManager.shared.addTracker(newTracker)
-        
-        if TrackerCategoryManager.shared.trackerCategories.contains(where: { $0.name == selectedCategory }) {
-            TrackerCategoryManager.shared.addTrackerToCategory(newTracker, categoryName: selectedCategory)
-        } else {
-            let newCategory = TrackerCategory(name: selectedCategory, trackers: [newTracker])
-            TrackerCategoryManager.shared.addNewTrackerCategories(newCategory)
-        }
+//        TrackerManager.shared.addTracker(newTracker)
         
         let trackerStore = TrackerStore()
-           
            // Вызываем метод createTracker() для сохранения нового трекера в Core Data
         trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned)
         
+        let categoryStore = TrackerCategoryStore()
+        categoryStore.createCategory(name: selectedCategory, trackerID: id)
         
+//        if TrackerCategoryManager.shared.trackerCategories.contains(where: { $0.name == selectedCategory }) {
+//            TrackerCategoryManager.shared.addTrackerToCategory(newTracker, categoryName: selectedCategory)
+//        } else {
+//            let newCategory = TrackerCategory(name: selectedCategory, trackers: [newTracker])
+//            TrackerCategoryManager.shared.addNewTrackerCategories(newCategory)
+//        }
         
         let tabBarController = TabBarController.shared
         tabBarController.navigationItem.hidesBackButton = true

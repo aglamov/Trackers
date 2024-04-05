@@ -14,28 +14,37 @@ import UIKit
 //}
 
 final class TrackersViewController: UIViewController, TrackerCellDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+
+    let coreDataStore = CoreDataStore()
     var currentDate: Date = Date()
     var presenter: TrackersPresenterProtocol?
     var trackerCategories: [TrackerCategory] {
         return TrackerCategoryManager.shared.trackerCategories
     }
-    var visibleTrackerCategories: [TrackerCategory] = []
+    var visibleTrackerCategories: [TrackerCategoryCoreData] = []
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrackerCell", for: indexPath) as! TrackerCell
         
-        let tracker = visibleTrackerCategories[indexPath.section].trackers[indexPath.item]
-        cell.id = tracker.id
-        cell.titleLabel.text = tracker.name
-        cell.delegate = self
-        cell.currentDate = currentDate
-        cell.updateButtonAvailability(for: currentDate) 
-        updateCellUIAndButton(for: cell)
+        let category = visibleTrackerCategories[indexPath.section]
+        if let trackersSet = category.trackers,
+           let trackersArray = trackersSet.allObjects as? [TrackerCoreData],
+           indexPath.item < trackersArray.count {
+            
+            let tracker = trackersArray[indexPath.item]
+            cell.id = tracker.id
+            cell.titleLabel.text = tracker.name
+            cell.delegate = self
+            cell.currentDate = currentDate
+            cell.updateButtonAvailability(for: currentDate)
+            updateCellUIAndButton(for: cell)
+        }
         
         return cell
     }
+
+
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let horizontalInsets: CGFloat = 16 * 3
@@ -49,7 +58,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return visibleTrackerCategories[section].trackers.count
+        return visibleTrackerCategories[section].trackers?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -75,9 +84,16 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         updateCellUIAndButton(for: trackerCell)
     }
     
+    private func updateVisibleTrackerCategories() {
+            visibleTrackerCategories = TrackerCategoryStore().fetchCategories()
+            trackersCollectionView.reloadData()
+            checkEmptyState()
+        }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        visibleTrackerCategories = trackerCategories
+       // visibleTrackerCategories = trackerCategories
+        updateVisibleTrackerCategories()
         trackersCollectionView.reloadData()
         checkEmptyState()
     }
@@ -147,8 +163,8 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     
     override func viewDidLoad() {
         super.viewDidLoad()
+     //   coreDataStore.deleteAllData()
         setupTrackersScreen()
-        visibleTrackerCategories = trackerCategories
         trackersCollectionView.delegate = self
         currentDate = Date()
     }
@@ -258,11 +274,11 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         currentDate = sender.date
         // print ("Обрабатывает дату \(currentDate)")
         let weekday = Calendar.current.component(.weekday, from: currentDate)
-        visibleTrackerCategories = TrackerCategoryManager.shared.trackerCategories.filter { category in
-            category.trackers.contains { tracker in
-                tracker.schedule.contains(weekday) || tracker.type == .unregularEvent
-            }
-        }
+//        visibleTrackerCategories = TrackerCategoryManager.shared.trackerCategories.filter { category in
+//            category.trackers.contains { tracker in
+//                tracker.schedule.contains(weekday) || tracker.type == .unregularEvent
+//            }
+//        }
         
         checkEmptyState()
         
@@ -271,14 +287,14 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
             return
         }
         
-        for category in visibleTrackerCategories {
-            for tracker in category.trackers {
-                guard let cell = findCell(for: tracker) else {
-                    continue
-                }
-                //      print(cell)
-            }
-        }
+//        for category in visibleTrackerCategories {
+//            for tracker in category.trackers {
+//                guard let cell = findCell(for: tracker) else {
+//                    continue
+//                }
+//                //      print(cell)
+//            }
+//        }
         
         trackersCollectionView.reloadData()
     }

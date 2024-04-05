@@ -20,7 +20,6 @@
 		759DE6042B2DC635007C26B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759DE6032B2DC635007C26B6 /* AppDelegate.swift */; };
 		759DE6062B2DC635007C26B6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759DE6052B2DC635007C26B6 /* SceneDelegate.swift */; };
 		759DE6082B2DC635007C26B6 /* TrackersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759DE6072B2DC635007C26B6 /* TrackersController.swift */; };
-		759DE60E2B2DC635007C26B6 /* Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 759DE60C2B2DC635007C26B6 /* Tracker.xcdatamodeld */; };
 		759DE6102B2DC636007C26B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 759DE60F2B2DC636007C26B6 /* Assets.xcassets */; };
 		759DE6132B2DC636007C26B6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 759DE6112B2DC636007C26B6 /* LaunchScreen.storyboard */; };
 		759DE61C2B2E737C007C26B6 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759DE61B2B2E737C007C26B6 /* TabBarController.swift */; };
@@ -35,6 +34,7 @@
 		75C6771B2B604F7E0046422B /* TrackerRecordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C6771A2B604F7E0046422B /* TrackerRecordModel.swift */; };
 		75C6771D2B604FA80046422B /* TrackerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C6771C2B604FA80046422B /* TrackerType.swift */; };
 		75C677222B605D440046422B /* TrackerCreationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C677212B605D440046422B /* TrackerCreationController.swift */; };
+		75EBD80D2BBF57680064DE28 /* Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 759DE60C2B2DC635007C26B6 /* Tracker.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -245,7 +245,6 @@
 			files = (
 				758415C92B62E6CA002B1E83 /* TrackerCreationExtendedViewController.swift in Sources */,
 				758415D52B754B86002B1E83 /* CategoryCreationViewController.swift in Sources */,
-				759DE60E2B2DC635007C26B6 /* Tracker.xcdatamodeld in Sources */,
 				758415D12B6FE45C002B1E83 /* TrackerCell.swift in Sources */,
 				758415D32B717C9D002B1E83 /* HeaderView.swift in Sources */,
 				75C3B2A52BB8C892009581FF /* TrackerRecordStore.swift in Sources */,
@@ -264,6 +263,7 @@
 				75B8566C2B2F90C800A27B4A /* TrackersPresenter.swift in Sources */,
 				759DE6042B2DC635007C26B6 /* AppDelegate.swift in Sources */,
 				758415CD2B68300C002B1E83 /* TrackerCategory.swift in Sources */,
+				75EBD80D2BBF57680064DE28 /* Tracker.xcdatamodeld in Sources */,
 				75B8566A2B2F903000A27B4A /* StatisticsController.swift in Sources */,
 				75C677222B605D440046422B /* TrackerCreationController.swift in Sources */,
 				758415CB2B67CCF7002B1E83 /* TrackerSchedule.swift in Sources */,
