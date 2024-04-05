@@ -10,13 +10,23 @@ import CoreData
 
 class TrackerCategoryStore: CoreDataStore {
     func createCategory(name: String, trackerID: UUID) {
-        if !categoryExists(with: name) {
-            let context = persistentContainer.viewContext
-            
+        let context = persistentContainer.viewContext
+        if let existingCategory = fetchCategory(with: name, context: context) {
+            // Категория уже существует, добавляем трекер к существующей категории
+            if let tracker = fetchTracker(with: trackerID, context: context) {
+                existingCategory.addToTrackers(tracker)
+                do {
+                    try context.save()
+                    print("Трекер успешно добавлен к существующей категории и сохранен в базе данных.")
+                } catch {
+                    print("Ошибка при сохранении изменений: \(error.localizedDescription)")
+                }
+            }
+        } else {
+            // Категория не существует, создаем новую категорию
             let newCategory = TrackerCategoryCoreData(context: context)
             newCategory.name = name
             
-            // Получаем объект трекера из того же контекста, что и категория
             if let tracker = fetchTracker(with: trackerID, context: context) {
                 newCategory.addToTrackers(tracker)
                 do {
@@ -42,16 +52,16 @@ class TrackerCategoryStore: CoreDataStore {
         }
     }
     
-    private func categoryExists(with name: String) -> Bool {
+    private func fetchCategory(with name: String, context: NSManagedObjectContext) -> TrackerCategoryCoreData? {
         let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "name == %@", name)
         
         do {
-            let count = try persistentContainer.viewContext.count(for: fetchRequest)
-            return count > 0
+            let categories = try context.fetch(fetchRequest)
+            return categories.first
         } catch {
-            print("Error checking if category exists: \(error.localizedDescription)")
-            return false
+            print("Ошибка при поиске категории: \(error.localizedDescription)")
+            return nil
         }
     }
     
