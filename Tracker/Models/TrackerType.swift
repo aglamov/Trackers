@@ -6,7 +6,7 @@
 
 import Foundation
 
-enum TrackerType {
-    case habit
-    case unregularEvent
+enum TrackerType: Int16 {
+    case habit = 0
+    case unregularEvent = 1
 }

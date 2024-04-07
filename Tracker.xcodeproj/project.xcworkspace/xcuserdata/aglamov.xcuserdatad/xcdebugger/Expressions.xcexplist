@@ -77,9 +77,21 @@
          contextName = "TrackersViewController.collectionView(_:numberOfItemsInSection:):TrackersController.swift">
          <PersistentStrings>
             <PersistentString
+               value = "visibleTrackerCategories[0].trackers">
+            </PersistentString>
+            <PersistentString
                value = "trackers.count">
             </PersistentString>
+            <PersistentString
+               value = "visibleTrackerCategories[section].trackers?.count">
+            </PersistentString>
+            <PersistentString
+               value = "visibleTrackerCategories">
+            </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in closure #1 in TrackersViewController.setDateForTrackers(_:):TrackersController.swift">
       </ContextState>
       <ContextState
          contextName = "TrackersViewController.trackers.setter:TrackersController.swift">
@@ -112,6 +124,22 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "TrackersViewController.collectionView(_:cellForItemAt:):TrackersController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "category">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in TrackersViewController.setDateForTrackers(_:):TrackersController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "visibleTrackerCategories">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "TrackersViewController.updateButtonAvailability(for:):TrackersController.swift">
          <PersistentStrings>
             <PersistentString
@@ -126,7 +154,7 @@
                value = "TrackerCategoryManager.shared.trackerCategories">
             </PersistentString>
             <PersistentString
-               value = "TrackerRecordManager.shared.trackerRecords">
+               value = "tracker.typeTrecker">
             </PersistentString>
             <PersistentString
                value = "trackerCategories">
@@ -154,6 +182,15 @@
          <PersistentStrings>
             <PersistentString
                value = "trackerCategories.count">
+            </PersistentString>
+            <PersistentString
+               value = "visibleTrackerCategories.count">
+            </PersistentString>
+            <PersistentString
+               value = "category.name">
+            </PersistentString>
+            <PersistentString
+               value = "visibleTrackerCategories">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

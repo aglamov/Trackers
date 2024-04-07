@@ -10,7 +10,7 @@ import CoreData
 import UIKit
 
 class TrackerStore: CoreDataStore {
-    func createTracker(id: UUID, name: String, color: UIColor, emoji: String, schedule: [Int], isPinned: Bool) {
+    func createTracker(id: UUID, name: String, color: UIColor, emoji: String, schedule: [Int], isPinned: Bool, typeTrecker: Int16) {
         
         let context = persistentContainer.viewContext
         let newTracker = TrackerCoreData(context: context)
@@ -19,8 +19,14 @@ class TrackerStore: CoreDataStore {
         newTracker.color = color
         newTracker.emoji = emoji
         newTracker.isPinned = false
-     //   newTracker.schedule = schedule as NSObject
-        
+        newTracker.typeTrecker = typeTrecker
+        do {
+            let scheduleData = try NSKeyedArchiver.archivedData(withRootObject: schedule, requiringSecureCoding: false)
+            newTracker.schedule = scheduleData as NSObject
+        } catch {
+            print("Ошибка при сериализации данных: \(error.localizedDescription)")
+        }
+      
         do {
             try context.save()
             print("Новый трекер успешно создан и сохранен в базе данных.")
@@ -41,4 +47,17 @@ class TrackerStore: CoreDataStore {
                 return nil
             }
         }
+    
+    func fetchTracker(with id: UUID, context: NSManagedObjectContext) -> TrackerCoreData? {
+        let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        
+        do {
+            let trackers = try context.fetch(fetchRequest)
+            return trackers.first
+        } catch {
+            print("Error fetching tracker: \(error.localizedDescription)")
+            return nil
+        }
+    }
 }

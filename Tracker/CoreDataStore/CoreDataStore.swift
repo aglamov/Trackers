@@ -10,6 +10,7 @@ import Foundation
 import CoreData
 
 class CoreDataStore {
+    @NSManaged var typeTrecker: Int16
     let persistentContainer: NSPersistentContainer
     
     init() {
@@ -32,6 +33,14 @@ class CoreDataStore {
             }
         }
     }
+    
+    func convertTrackerTypeToInt16(_ typeTrecker: TrackerType) -> Int16 {
+            return Int16(typeTrecker.rawValue)
+        }
+    
+    func convertInt16ToTrackerType(_ intValue: Int16) -> TrackerType? {
+            return TrackerType(rawValue: intValue)
+        }
     
     func deleteAllData() {
         let context = persistentContainer.viewContext

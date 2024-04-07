@@ -20,9 +20,22 @@ class TrackerCell: UICollectionViewCell {
     let containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-      //  view.backgroundColor = .yGreen
         view.layer.cornerRadius = 10
         return view
+    }()
+    
+    let containerEmoji: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 10
+        return view
+    }()
+    
+    let emoji: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        return label
     }()
     
     let titleLabel: UILabel = {
@@ -63,6 +76,8 @@ class TrackerCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(containerView)
+        containerView.addSubview(containerEmoji)
+        containerView.addSubview(emoji)
         contentView.addSubview(titleLabel)
         contentView.addSubview(countLabel)
         contentView.addSubview(addButton)
@@ -72,6 +87,14 @@ class TrackerCell: UICollectionViewCell {
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             containerView.heightAnchor.constraint(equalToConstant: 90),
+            
+            containerEmoji.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
+            containerEmoji.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
+            containerEmoji.heightAnchor.constraint(equalToConstant: 24),
+            containerEmoji.widthAnchor.constraint(equalToConstant: 24),
+            
+            emoji.centerXAnchor.constraint(equalTo: containerEmoji.centerXAnchor),
+            emoji.centerYAnchor.constraint(equalTo: containerEmoji.centerYAnchor),
             
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),

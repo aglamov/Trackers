@@ -12,7 +12,6 @@ class TrackerCategoryStore: CoreDataStore {
     func createCategory(name: String, trackerID: UUID) {
         let context = persistentContainer.viewContext
         if let existingCategory = fetchCategory(with: name, context: context) {
-            // Категория уже существует, добавляем трекер к существующей категории
             if let tracker = fetchTracker(with: trackerID, context: context) {
                 existingCategory.addToTrackers(tracker)
                 do {
@@ -23,7 +22,6 @@ class TrackerCategoryStore: CoreDataStore {
                 }
             }
         } else {
-            // Категория не существует, создаем новую категорию
             let newCategory = TrackerCategoryCoreData(context: context)
             newCategory.name = name
             
@@ -66,7 +64,7 @@ class TrackerCategoryStore: CoreDataStore {
     }
     
     func fetchCategories() -> [TrackerCategoryCoreData] {
-        let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest() 
+        let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         do {
             let categories = try persistentContainer.viewContext.fetch(fetchRequest)
             return categories
@@ -75,4 +73,35 @@ class TrackerCategoryStore: CoreDataStore {
             return []
         }
     }
+    
+    func fetchCategoriesWithTrackersOnWeekday(_ weekday: Int) -> [TrackerCategoryCoreData] {
+            let context = persistentContainer.viewContext
+            let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+            
+            do {
+                let categories = try context.fetch(fetchRequest)
+                let categoriesWithTrackersOnWeekday = categories.filter { category in
+                    if let trackers = category.trackers {
+                        return trackers.contains { tracker in
+                            if let tracker = tracker as? TrackerCoreData,
+                               let scheduleData = tracker.schedule as? Data {
+                                do {
+                                    let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int]
+                                    return schedule?.contains(weekday) ?? false
+                                } catch {
+                                    print("Ошибка декодирования расписания: \(error)")
+                                    return false
+                                }
+                            }
+                            return false
+                        }
+                    }
+                    return false
+                }
+                return categoriesWithTrackersOnWeekday
+            } catch {
+                print("Error fetching categories: \(error.localizedDescription)")
+                return []
+            }
+        }
 }

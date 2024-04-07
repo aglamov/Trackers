@@ -305,13 +305,12 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         let emoji = emojis[selectedEmojiIndexPath!.item]
         let schedule: [Int] = selectedIndexes
         let isPinned = false
+        let typeTrecker: Int16 = selectedType.rawValue
         
-        let newTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned)
-//        TrackerManager.shared.addTracker(newTracker)
+      //  let newTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTrecker: typeTrecker)
         
         let trackerStore = TrackerStore()
-           // Вызываем метод createTracker() для сохранения нового трекера в Core Data
-        trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned)
+        trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTrecker: typeTrecker)
         
         let categoryStore = TrackerCategoryStore()
         categoryStore.createCategory(name: selectedCategory, trackerID: id)
