@@ -307,20 +307,13 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         let isPinned = false
         let typeTrecker: Int16 = selectedType.rawValue
         
-      //  let newTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTrecker: typeTrecker)
-        
         let trackerStore = TrackerStore()
         trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTrecker: typeTrecker)
         
+        let tracker = trackerStore.fetchTracker(with: id)!
+
         let categoryStore = TrackerCategoryStore()
-        categoryStore.createCategory(name: selectedCategory, trackerID: id)
-        
-//        if TrackerCategoryManager.shared.trackerCategories.contains(where: { $0.name == selectedCategory }) {
-//            TrackerCategoryManager.shared.addTrackerToCategory(newTracker, categoryName: selectedCategory)
-//        } else {
-//            let newCategory = TrackerCategory(name: selectedCategory, trackers: [newTracker])
-//            TrackerCategoryManager.shared.addNewTrackerCategories(newCategory)
-//        }
+        categoryStore.createCategory(name: selectedCategory, tracker: tracker)
         
         let tabBarController = TabBarController.shared
         tabBarController.navigationItem.hidesBackButton = true

@@ -13,7 +13,7 @@ class TrackerStore: CoreDataStore {
     func createTracker(id: UUID, name: String, color: UIColor, emoji: String, schedule: [Int], isPinned: Bool, typeTrecker: Int16) {
         
         let context = persistentContainer.viewContext
-        let newTracker = TrackerCoreData(context: context)
+        let newTracker = TrackersCoreData(context: context)
         newTracker.id = id
         newTracker.name = name
         newTracker.color = color
@@ -35,8 +35,8 @@ class TrackerStore: CoreDataStore {
         }
     }
     
-    func fetchTracker(with id: UUID) -> TrackerCoreData? {
-            let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+    func fetchTracker(with id: UUID) -> TrackersCoreData? {
+            let fetchRequest: NSFetchRequest<TrackersCoreData> = TrackersCoreData.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             
             do {
@@ -48,8 +48,8 @@ class TrackerStore: CoreDataStore {
             }
         }
     
-    func fetchTracker(with id: UUID, context: NSManagedObjectContext) -> TrackerCoreData? {
-        let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+    func fetchTracker(with id: UUID, context: NSManagedObjectContext) -> TrackersCoreData? {
+        let fetchRequest: NSFetchRequest<TrackersCoreData> = TrackersCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         
         do {

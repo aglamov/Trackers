@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23C71" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class">
-        <attribute name="attribute" optional="YES"/>
-    </entity>
-    <entity name="Entity1" representedClassName="Entity1" syncable="YES" codeGenerationType="class">
-        <relationship name="relationship" toMany="YES" deletionRule="Nullify" destinationEntity="Entity"/>
-    </entity>
-</model>

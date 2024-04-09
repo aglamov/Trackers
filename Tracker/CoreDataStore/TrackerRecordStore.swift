@@ -9,39 +9,83 @@ import Foundation
 import CoreData
 
 class TrackerRecordStore: CoreDataStore {
-    func createRecord(date: Date, trackerID: UUID) {
+    func createRecord(date: Date, tracker: TrackersCoreData) {
         let context = persistentContainer.viewContext
-        let newRecord = TrackerRecordCoreData(context: context)
-        newRecord.date = date
-        if let tracker = fetchTracker(with: trackerID, context: context) {
-            newRecord.addToTrackers(tracker)
+            guard let trackerInContext = context.object(with: tracker.objectID) as? TrackersCoreData else {
+                fatalError("Tracker is not in the same context as newRecord")
+            }
+            
+            let newRecord = TrackersRecordCoreData(context: context)
+            newRecord.date = date
+            newRecord.trackers = trackerInContext
+        
             do {
                 try context.save()
-                print("Запись трекера на дату \(date) успешно создана и сохранена в базе данных.")
+          //      let totalCount = countRecords()
+           //     print("Запись трекера \(String(describing: tracker.id)) на дату \(date) успешно создана и сохранена в базе данных.")
+           //     print("Общее количество записей в базе TrackerRecordCoreData: \(totalCount)")
+          //      print("Вот все записи базы:")
+//                let allRecords = fetchAllRecords()
+//                for record in allRecords {
+//                    guard let trackers = record.trackers as? Set<TrackersCoreData> else {
+//                        print("Дата записи: \(String(describing: record.date)), ID трекеров: Нет трекеров")
+//                        continue
+//                    }
+//                    var trackersInfo = ""
+//                        for tracker in trackers {
+//                            if let trackerID = tracker.id {
+//                                trackersInfo += "\(trackerID.uuidString), "
+//                            } else {
+//                                trackersInfo += "Нет идентификатора, "
+//                            }
+//                        }
+//                        print("Дата записи: \(String(describing: record.date)), ID трекеров: \(trackersInfo)")
+//                }
+                           
             } catch {
                 print("Ошибка при создании и сохранении записи трекера на дату \(date): \(error.localizedDescription)")
             }
-        } else {
-            print("Трекер с ID \(trackerID) не найден.")
+    }
+    
+    func countRecords() -> Int {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
+        
+        do {
+            let count = try context.count(for: fetchRequest)
+            return count
+        } catch {
+            print("Ошибка при подсчете записей: \(error.localizedDescription)")
+            return 0
+        }
+    }
+    
+    func fetchAllRecords() -> [TrackersRecordCoreData] {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
+        
+        do {
+            let records = try context.fetch(fetchRequest)
+            return records
+        } catch {
+            print("Ошибка при получении записей: \(error.localizedDescription)")
+            return []
         }
     }
     
     func removeRecord(trackerID: UUID, date: Date) {
         let context = persistentContainer.viewContext
         
-        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "ANY trackers.id == %@ AND date == %@", trackerID as CVarArg, date as CVarArg)
         
         do {
-            // Получаем записи, соответствующие запросу
             let records = try context.fetch(fetchRequest)
-            
-            // Удаляем найденные записи
+
             for record in records {
                 context.delete(record)
             }
-            
-            // Сохраняем контекст
+
             try context.save()
             
             print("Записи для трекера с ID \(trackerID) на дату \(date) успешно удалены.")
@@ -50,8 +94,8 @@ class TrackerRecordStore: CoreDataStore {
         }
     }
     
-    private func fetchTracker(with id: UUID, context: NSManagedObjectContext) -> TrackerCoreData? {
-        let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+    private func fetchTracker(with id: UUID, context: NSManagedObjectContext) -> TrackersCoreData? {
+        let fetchRequest: NSFetchRequest<TrackersCoreData> = TrackersCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         
         do {
@@ -63,8 +107,8 @@ class TrackerRecordStore: CoreDataStore {
         }
     }
     
-    private func fetchRecord(with id: UUID, context: NSManagedObjectContext) -> TrackerRecordCoreData? {
-        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+    private func fetchRecord(with id: UUID, context: NSManagedObjectContext) -> TrackersRecordCoreData? {
+        let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         
         do {
@@ -76,9 +120,9 @@ class TrackerRecordStore: CoreDataStore {
         }
     }
     
-    func fetchRecords(forTrackerID trackerID: UUID, date: Date) -> [TrackerRecordCoreData]? {
+    func fetchRecords(forTrackerID trackerID: UUID, date: Date) -> [TrackersRecordCoreData]? {
         let context = persistentContainer.viewContext
-        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "date == %@ AND ANY trackers.id == %@", date as CVarArg, trackerID as CVarArg)
         
         do {
@@ -92,11 +136,17 @@ class TrackerRecordStore: CoreDataStore {
     
     func countRecords(forTrackerID trackerID: UUID) -> Int {
         let context = persistentContainer.viewContext
-        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "ANY trackers.id == %@", trackerID as CVarArg)
-        
+        let trackerFetchRequest: NSFetchRequest<TrackersCoreData> = TrackersCoreData.fetchRequest()
+        trackerFetchRequest.predicate = NSPredicate(format: "id == %@", trackerID as CVarArg)
         do {
-            let count = try context.count(for: fetchRequest)
+            let trackers = try context.fetch(trackerFetchRequest)
+            guard let tracker = trackers.first else {
+                print("Tracker with ID \(trackerID) not found")
+                return 0
+            }
+            let recordFetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
+            recordFetchRequest.predicate = NSPredicate(format: "ANY trackers == %@", tracker)
+            let count = try context.count(for: recordFetchRequest)
             return count
         } catch {
             print("Error counting records for tracker with ID \(trackerID): \(error.localizedDescription)")

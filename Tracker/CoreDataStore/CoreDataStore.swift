@@ -14,7 +14,7 @@ class CoreDataStore {
     let persistentContainer: NSPersistentContainer
     
     init() {
-        persistentContainer = NSPersistentContainer(name: "Tracker")
+        persistentContainer = NSPersistentContainer(name: "TrackersModel")
         persistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -44,7 +44,7 @@ class CoreDataStore {
     
     func deleteAllData() {
         let context = persistentContainer.viewContext
-        let fetchRequestTrackerCategory: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "TrackerCategory")
+        let fetchRequestTrackerCategory: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "TrackersCategoryCoreData")
         
         do {
             let objects = try context.fetch(fetchRequestTrackerCategory)
@@ -59,7 +59,22 @@ class CoreDataStore {
             print("Ошибка при удалении данных: \(error.localizedDescription)")
         }
         
-        let fetchRequestTrackers: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Trackers")
+        let fetchRequestTRecords: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "TrackersRecordCoreData")
+        
+        do {
+            let objects = try context.fetch(fetchRequestTRecords)
+            for object in objects {
+                guard let objectData = object as? NSManagedObject else { continue }
+                context.delete(objectData)
+            }
+            
+            try context.save()
+            print("Все данные удалены из базы данных TrackerRecord.")
+        } catch {
+            print("Ошибка при удалении данных: \(error.localizedDescription)")
+        }
+        
+        let fetchRequestTrackers: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "TrackersCoreData")
         
         do {
             let objects = try context.fetch(fetchRequestTrackers)
@@ -73,6 +88,7 @@ class CoreDataStore {
         } catch {
             print("Ошибка при удалении данных: \(error.localizedDescription)")
         }
+        
     }
     
 }

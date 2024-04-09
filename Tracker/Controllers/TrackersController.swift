@@ -18,14 +18,18 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     let coreDataStore = CoreDataStore()
     var currentDate: Date = Date()
     var presenter: TrackersPresenterProtocol?
-    var visibleTrackerCategories = [TrackerCategoryCoreData]()
+    var visibleTrackerCategories = [TrackersCategoryCoreData]()
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrackerCell", for: indexPath) as! TrackerCell
+        let carrentTrackerCategories = TrackerCategoryStore()
+        let weekday = weekdayNumber(for: currentDate)
+        
+        visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
         
         let category = visibleTrackerCategories[indexPath.section]
         if let trackersSet = category.trackers,
-           let trackersArray = trackersSet.allObjects as? [TrackerCoreData],
+           let trackersArray = trackersSet.allObjects as? [TrackersCoreData],
            indexPath.item < trackersArray.count {
             
             let tracker = trackersArray[indexPath.item]
@@ -53,7 +57,8 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         let carrentTrackerCategories = TrackerCategoryStore()
         let weekday = weekdayNumber(for: currentDate)
-        visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday) 
+        
+        visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
         for category in visibleTrackerCategories {
             print("Категория: \(category.name ?? "Unknown")")
             if let trackers = category.trackers {
@@ -73,6 +78,12 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+//        let carrentTrackerCategories = TrackerCategoryStore()
+//        let weekday = weekdayNumber(for: currentDate)
+//        
+//        visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
+        
         if kind == UICollectionView.elementKindSectionHeader {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderView", for: indexPath) as! HeaderView
             headerView.titleLabel.text = visibleTrackerCategories[indexPath.section].name
@@ -197,11 +208,6 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         navigationItem.rightBarButtonItem = datePickerButton
     }
     
-    //    func didSelectDate(_ date: Date) {
-    //        currentDate = date
-    //    }
-    
-    
     private func addSubviews() {
         view.addSubview(emptyScreenView)
         view.addSubview(trackersCollectionView)
@@ -232,13 +238,13 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         }
         let trackerRecordStore = TrackerRecordStore()
         
-        //       print("Обрабатываем трекер \(trackerID)")
+        print("Обрабатываем трекер \(trackerID)")
         let recordCount = trackerRecordStore.countRecords(forTrackerID: trackerID)
-        //       print("Количество записей с таким трекером \(recordCount)")
+        print("Количество записей с таким трекером \(recordCount)")
         cell.countLabel.text = "\(recordCount) \(dayString(for: recordCount))"
         
         let isCompleted = isTrackerCompleted(trackerID, date: currentDate)
-        //      print("На дату \(currentDate) трекер выполнен \(isCompleted)")
+        print("На дату \(currentDate) трекер выполнен \(isCompleted)")
         cell.addButton.isSelected = isCompleted
     }
     
@@ -248,21 +254,22 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
             return
         }
         
-        let trackerRecordStore = TrackerRecordStore()
+        let trackerStore = TrackerStore()
         
         if !cell.addButton.isSelected {
-            trackerRecordStore.createRecord(date: currentDate, trackerID: trackerID)
+            if let tracker = trackerStore.fetchTracker(with: trackerID) {
+                let trackerRecordStore = TrackerRecordStore()
+                trackerRecordStore.createRecord(date: currentDate, tracker: tracker)
+            }
             cell.addButton.isSelected = true
         } else {
+            let trackerRecordStore = TrackerRecordStore()
             trackerRecordStore.removeRecord(trackerID: trackerID, date: currentDate)
             cell.addButton.isSelected = false
         }
         trackersCollectionView.reloadData()
     }
-    
-//    private func isTrackerCompleted(_ trackerID: UUID, date: Date) -> Bool {
-//        return TrackerRecordManager.shared.getTrackerRecords().contains(where: { $0.id == trackerID && Calendar.current.isDate($0.date, inSameDayAs: date) })
-//    }
+
     private func isTrackerCompleted(_ trackerID: UUID, date: Date) -> Bool {
         let recordStore = TrackerRecordStore()
         if let records = recordStore.fetchRecords(forTrackerID: trackerID, date: date) {
@@ -295,7 +302,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         for category in trackerCategories {
             guard let trackers = category.trackers else { continue }
             for tracker in trackers {
-                guard let tracker = tracker as? TrackerCoreData else { continue }
+                guard let tracker = tracker as? TrackersCoreData else { continue }
                 guard let scheduleData = tracker.schedule as? Data else { continue }
                 do {
                     if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {

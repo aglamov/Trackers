@@ -9,36 +9,35 @@ import Foundation
 import CoreData
 
 class TrackerCategoryStore: CoreDataStore {
-    func createCategory(name: String, trackerID: UUID) {
+    func createCategory(name: String, tracker: TrackersCoreData) {
         let context = persistentContainer.viewContext
+        
+        guard let trackerInContext = context.object(with: tracker.objectID) as? TrackersCoreData else {
+            fatalError("Tracker is not in the same context as newRecord")
+        }
+        
         if let existingCategory = fetchCategory(with: name, context: context) {
-            if let tracker = fetchTracker(with: trackerID, context: context) {
-                existingCategory.addToTrackers(tracker)
-                do {
-                    try context.save()
-                    print("Трекер успешно добавлен к существующей категории и сохранен в базе данных.")
-                } catch {
-                    print("Ошибка при сохранении изменений: \(error.localizedDescription)")
-                }
-            }
+            existingCategory.addToTrackers(trackerInContext)
+         //   print("В категорию \(String(describing: existingCategory.name)). Добавлен трекер \(String(describing: trackerInContext.name))")
         } else {
-            let newCategory = TrackerCategoryCoreData(context: context)
+            let newCategory = TrackersCategoryCoreData(context: context)
             newCategory.name = name
-            
-            if let tracker = fetchTracker(with: trackerID, context: context) {
-                newCategory.addToTrackers(tracker)
-                do {
-                    try context.save()
-                    print("Новая категория успешно создана и сохранена в базе данных.")
-                } catch {
-                    print("Ошибка при сохранении новой категории: \(error.localizedDescription)")
-                }
-            }
+            newCategory.addToTrackers(trackerInContext)
+         //   print("Cоздана категория \(name). Добавлен трекер \(String(describing: trackerInContext.name)) с расписанием \(String(describing: trackerInContext.schedule))")
+        }
+        
+        do {
+            try context.save()
+            print("Изменения успешно сохранены в базе данных.")
+            let allCategories = fetchCategories().count
+            print("В базе категорий трекеров \(allCategories) категорий")
+        } catch {
+            print("Ошибка при сохранении изменений: \(error.localizedDescription)")
         }
     }
     
-    private func fetchTracker(with id: UUID, context: NSManagedObjectContext) -> TrackerCoreData? {
-        let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+    private func fetchTracker(with id: UUID, context: NSManagedObjectContext) -> TrackersCoreData? {
+        let fetchRequest: NSFetchRequest<TrackersCoreData> = TrackersCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         
         do {
@@ -50,8 +49,8 @@ class TrackerCategoryStore: CoreDataStore {
         }
     }
     
-    private func fetchCategory(with name: String, context: NSManagedObjectContext) -> TrackerCategoryCoreData? {
-        let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+    private func fetchCategory(with name: String, context: NSManagedObjectContext) -> TrackersCategoryCoreData? {
+        let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "name == %@", name)
         
         do {
@@ -63,8 +62,8 @@ class TrackerCategoryStore: CoreDataStore {
         }
     }
     
-    func fetchCategories() -> [TrackerCategoryCoreData] {
-        let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+    func fetchCategories() -> [TrackersCategoryCoreData] {
+        let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
         do {
             let categories = try persistentContainer.viewContext.fetch(fetchRequest)
             return categories
@@ -74,16 +73,16 @@ class TrackerCategoryStore: CoreDataStore {
         }
     }
     
-    func fetchCategoriesWithTrackersOnWeekday(_ weekday: Int) -> [TrackerCategoryCoreData] {
+    func fetchCategoriesWithTrackersOnWeekday(_ weekday: Int) -> [TrackersCategoryCoreData] {
             let context = persistentContainer.viewContext
-            let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+            let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
             
             do {
                 let categories = try context.fetch(fetchRequest)
                 let categoriesWithTrackersOnWeekday = categories.filter { category in
                     if let trackers = category.trackers {
                         return trackers.contains { tracker in
-                            if let tracker = tracker as? TrackerCoreData,
+                            if let tracker = tracker as? TrackersCoreData,
                                let scheduleData = tracker.schedule as? Data {
                                 do {
                                     let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int]
