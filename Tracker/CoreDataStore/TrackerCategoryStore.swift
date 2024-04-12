@@ -12,7 +12,6 @@ import UIKit
 protocol TrackerCategoryStoreDelegate: AnyObject {
     func trackerCategoryStoreDidChange(_ trackerCategoryStore: TrackerCategoryStore)
     func trackerCategoryStore(_ trackerCategoryStore: TrackerCategoryStore, didFetchCategories categories: [TrackersCategoryCoreData])
-   // func trackerCategoryStore(_ trackerCategoryStore: TrackerCategoryStore, didFailWithError error: Error)
 }
 
 class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
@@ -77,7 +76,6 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         
         do {
             try context.save()
-            // Уведомляем делегата о необходимости сохранения изменений
             delegate?.trackerCategoryStoreDidChange(self)
             print("Changes successfully saved to the database.")
         } catch {
@@ -102,22 +100,52 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
         do {
             let categories = try context.fetch(fetchRequest)
-            // Вызываем метод делегата для передачи результата
             delegate?.trackerCategoryStore(self, didFetchCategories: categories)
         } catch {
             print("Error fetching categories: \(error.localizedDescription)")
-            // Можно также вызвать метод делегата для передачи ошибки, если требуется
-           // delegate?.trackerCategoryStore(self, didFetchCategories: error)
         }
     }
     
+    func fetchCategoriesWithTrackersOnWeekday(_ weekday: Int) -> [TrackersCategoryCoreData] {
+            var categoriesWithTrackersOnWeekday = [TrackersCategoryCoreData]()
+
+            let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
+
+            do {
+                let categories = try context.fetch(fetchRequest)
+                for category in categories {
+                    guard let trackers = category.trackers else { continue }
+                    for tracker in trackers {
+                        guard let tracker = tracker as? TrackersCoreData else { continue }
+
+                        if let scheduleData = tracker.schedule as? Data {
+                            do {
+                                if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
+     
+                                    if schedule.contains(weekday) {
+                                        categoriesWithTrackersOnWeekday.append(category)
+                                        break
+                                    }
+                                }
+                            } catch {
+                                print("Error deserializing schedule data: \(error.localizedDescription)")
+                            }
+                        }
+                    }
+                }
+            } catch {
+                print("Error fetching categories: \(error.localizedDescription)")
+            }
+
+            return categoriesWithTrackersOnWeekday
+        }
+
+    
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Начало обновления контента
-        // Вы можете выполнить действия, которые нужно выполнить перед началом обновления, например, начать обновление интерфейса
+        
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Завершение обновления контента
-        // Вы можете выполнить действия, которые нужно выполнить после завершения обновления, например, обновить интерфейс
+        
     }
 }

@@ -6,47 +6,43 @@
 
 import UIKit
 
-//protocol TrackersViewControllerProtocol: AnyObject {
-//    var presenter: TrackersPresenterProtocol? { get }
-//    var trackersCollectionView: UICollectionView { get }
-//    var currentDate: Date? { get }
-//    func didSelectDate(_ date: Date)
-//}
-
 final class TrackersViewController: UIViewController, TrackerCellDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
+    
     let categoryStore = TrackerCategoryStore()
-       let coreDataStore = CoreDataStore()
-       var currentDate: Date = Date()
-       var presenter: TrackersPresenterProtocol?
-       var visibleTrackerCategories = [TrackersCategoryCoreData]()
+    let coreDataStore = CoreDataStore()
+    var currentDate: Date = Date()
+    var presenter: TrackersPresenterProtocol?
+    var visibleTrackerCategories = [TrackersCategoryCoreData]()
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrackerCell", for: indexPath) as! TrackerCell
-//        let carrentTrackerCategories = TrackerCategoryStore()
-//        let weekday = weekdayNumber(for: currentDate)
-        
-    //    visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
-        
+    
         let category = visibleTrackerCategories[indexPath.section]
-        if let trackersSet = category.trackers,
-           let trackersArray = trackersSet.allObjects as? [TrackersCoreData],
-           indexPath.item < trackersArray.count {
+        let weekday = weekdayNumber(for: currentDate)
+        let filteredTrackers = trackersForSelectedWeekday(weekday)
+
+        if let trackersInCategory = category.trackers?.allObjects as? [TrackersCoreData] {
+           
+            let filteredTrackersInCategory = trackersInCategory.filter { filteredTrackers.contains($0) }
             
-            let tracker = trackersArray[indexPath.item]
-            cell.id = tracker.id
-            cell.titleLabel.text = tracker.name
-            let colorCell = tracker.color as? UIColor
-            cell.containerView.backgroundColor = colorCell
-            cell.emoji.text = tracker.emoji
-            cell.containerEmoji.backgroundColor = colorCell?.withAlphaComponent(0.2)
-            cell.delegate = self
-            cell.currentDate = currentDate
-            cell.updateButtonAvailability(for: currentDate)
-            updateCellUIAndButton(for: cell)
+            if indexPath.item < filteredTrackersInCategory.count {
+                let tracker = filteredTrackersInCategory[indexPath.item]
+                cell.id = tracker.id
+                cell.titleLabel.text = tracker.name
+                let colorCell = tracker.color as? UIColor
+                cell.containerView.backgroundColor = colorCell
+                cell.emoji.text = tracker.emoji
+                cell.containerEmoji.backgroundColor = colorCell?.withAlphaComponent(0.2)
+                cell.delegate = self
+                cell.currentDate = currentDate
+                cell.updateButtonAvailability(for: currentDate)
+                updateCellUIAndButton(for: cell)
+            }
         }
+        
         return cell
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let horizontalInsets: CGFloat = 16 * 3
@@ -56,34 +52,25 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        let carrentTrackerCategories = TrackerCategoryStore()
-//        let weekday = weekdayNumber(for: currentDate)
-//        
-   //     visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
-        for category in visibleTrackerCategories {
-            print("Категория: \(category.name ?? "Unknown")")
-            if let trackers = category.trackers {
-                for tracker in trackers {
-                    print("  Tracker: \((tracker as AnyObject).name ?? "Unknown")")
-                }
-            } else {
-                print("  Нет трекеров в этой категории")
-            }
-        }
+        let carrentTrackerCategories = TrackerCategoryStore()
+        let weekday = weekdayNumber(for: currentDate)
+        
+        visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
         return visibleTrackerCategories.count
         
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return visibleTrackerCategories[section].trackers?.count ?? 0
+        let category = visibleTrackerCategories[section]
+        let weekday = weekdayNumber(for: currentDate)
+        let filteredTrackers = trackersForSelectedWeekday(weekday)
+        let trackersInCategory = category.trackers?.filtered(using: NSPredicate(format: "SELF IN %@", filteredTrackers))
+        
+        return trackersInCategory?.count ?? 0
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
-//        let carrentTrackerCategories = TrackerCategoryStore()
-//        let weekday = weekdayNumber(for: currentDate)
-//        
-//        visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
         
         if kind == UICollectionView.elementKindSectionHeader {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderView", for: indexPath) as! HeaderView
@@ -108,9 +95,9 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     }
     
     private func updateVisibleTrackerCategories() {
-  //      visibleTrackerCategories = TrackerCategoryStore().fetchCategories()
-        trackersCollectionView.reloadData()
-        checkEmptyState()
+        trackersCollectionView.delegate = self
+        categoryStore.delegate = self
+        categoryStore.fetchCategories()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -272,7 +259,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         }
         trackersCollectionView.reloadData()
     }
-
+    
     private func isTrackerCompleted(_ trackerID: UUID, date: Date) -> Bool {
         let recordStore = TrackerRecordStore()
         if let records = recordStore.fetchRecords(forTrackerID: trackerID, date: date) {
@@ -300,29 +287,37 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     @objc private func setDateForTrackers(_ sender: UIDatePicker) {
         currentDate = sender.date
         let weekday = Calendar.current.component(.weekday, from: currentDate)
-       // let trackerCategories = TrackerCategoryStore().fetchCategories()
-        visibleTrackerCategories.removeAll()
-//        for category in trackerCategories {
-//            guard let trackers = category.trackers else { continue }
-//            for tracker in trackers {
-//                guard let tracker = tracker as? TrackersCoreData else { continue }
-//                guard let scheduleData = tracker.schedule as? Data else { continue }
-//                do {
-//                    if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
-//                        print("Расписание для трекере \(tracker.name ?? ""): \(schedule)")
-//                        if schedule.contains(weekday) || tracker.typeTracker == 1 {
-//                            visibleTrackerCategories.append(category)
-//                            break
-//                        }
-//                    }
-//                } catch {
-//                    print("Ошибка декодирования расписания: \(error)")
-//                }
-//            }
-//        }
+        let categories = categoryStore.fetchCategoriesWithTrackersOnWeekday(weekday)
+        visibleTrackerCategories = categories
         checkEmptyState()
         trackersCollectionView.reloadData()
     }
+    
+    func trackersForSelectedWeekday(_ weekday: Int) -> [TrackersCoreData] {
+        var filteredTrackers = [TrackersCoreData]()
+        
+        for category in visibleTrackerCategories {
+            if let trackers = category.trackers {
+                for tracker in trackers {
+                    guard let tracker = tracker as? TrackersCoreData,
+                          let scheduleData = tracker.schedule as? Data else { continue }
+                    
+                    do {
+                        if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
+                            if schedule.contains(weekday) {
+                                filteredTrackers.append(tracker)
+                            }
+                        }
+                    } catch {
+                        print("Error decoding schedule data: \(error)")
+                    }
+                }
+            }
+        }
+        
+        return filteredTrackers
+    }
+    
     
     func weekdayNumber(for date: Date) -> Int {
         let calendar = Calendar.current
@@ -337,11 +332,12 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
     }
     
     func trackerCategoryStore(_ trackerCategoryStore: TrackerCategoryStore, didFetchCategories categories: [TrackersCategoryCoreData]) {
-        self.visibleTrackerCategories = categories
+        visibleTrackerCategories = categories
         trackersCollectionView.reloadData()
+        checkEmptyState()
     }
     
     func trackerCategoryStore(_ trackerCategoryStore: TrackerCategoryStore, didFailWithError error: Error) {
-        // Обработка ошибки при получении данных
+      
     }
 }
