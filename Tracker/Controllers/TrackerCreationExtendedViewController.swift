@@ -305,10 +305,10 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         let emoji = emojis[selectedEmojiIndexPath!.item]
         let schedule: [Int] = selectedIndexes
         let isPinned = false
-        let typeTrecker: Int16 = selectedType.rawValue
+        let typeTracker: Int16 = selectedType.rawValue
         
         let trackerStore = TrackerStore()
-        trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTrecker: typeTrecker)
+        trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTracker: typeTracker)
         
         let tracker = trackerStore.fetchTracker(with: id)!
 

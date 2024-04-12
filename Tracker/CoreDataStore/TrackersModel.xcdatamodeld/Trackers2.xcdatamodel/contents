@@ -11,7 +11,7 @@
         <attribute name="isPinned" attributeType="Boolean" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="schedule" attributeType="Transformable"/>
-        <attribute name="typeTrecker" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="typeTracker" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="trackerCategorys" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TrackersCategoryCoreData" inverseName="trackers" inverseEntity="TrackersCategoryCoreData"/>
         <relationship name="trackerRecords" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackersRecordCoreData" inverseName="trackers" inverseEntity="TrackersRecordCoreData"/>
     </entity>

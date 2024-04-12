@@ -14,18 +14,19 @@ import UIKit
 //}
 
 final class TrackersViewController: UIViewController, TrackerCellDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    let coreDataStore = CoreDataStore()
-    var currentDate: Date = Date()
-    var presenter: TrackersPresenterProtocol?
-    var visibleTrackerCategories = [TrackersCategoryCoreData]()
+
+    let categoryStore = TrackerCategoryStore()
+       let coreDataStore = CoreDataStore()
+       var currentDate: Date = Date()
+       var presenter: TrackersPresenterProtocol?
+       var visibleTrackerCategories = [TrackersCategoryCoreData]()
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrackerCell", for: indexPath) as! TrackerCell
-        let carrentTrackerCategories = TrackerCategoryStore()
-        let weekday = weekdayNumber(for: currentDate)
+//        let carrentTrackerCategories = TrackerCategoryStore()
+//        let weekday = weekdayNumber(for: currentDate)
         
-        visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
+    //    visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
         
         let category = visibleTrackerCategories[indexPath.section]
         if let trackersSet = category.trackers,
@@ -55,10 +56,10 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        let carrentTrackerCategories = TrackerCategoryStore()
-        let weekday = weekdayNumber(for: currentDate)
-        
-        visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
+//        let carrentTrackerCategories = TrackerCategoryStore()
+//        let weekday = weekdayNumber(for: currentDate)
+//        
+   //     visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
         for category in visibleTrackerCategories {
             print("Категория: \(category.name ?? "Unknown")")
             if let trackers = category.trackers {
@@ -107,7 +108,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     }
     
     private func updateVisibleTrackerCategories() {
-        visibleTrackerCategories = TrackerCategoryStore().fetchCategories()
+  //      visibleTrackerCategories = TrackerCategoryStore().fetchCategories()
         trackersCollectionView.reloadData()
         checkEmptyState()
     }
@@ -183,6 +184,8 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         super.viewDidLoad()
         setupTrackersScreen()
         trackersCollectionView.delegate = self
+        categoryStore.delegate = self
+        categoryStore.fetchCategories()
         currentDate = Date()
     }
     
@@ -297,26 +300,26 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     @objc private func setDateForTrackers(_ sender: UIDatePicker) {
         currentDate = sender.date
         let weekday = Calendar.current.component(.weekday, from: currentDate)
-        let trackerCategories = TrackerCategoryStore().fetchCategories()
+       // let trackerCategories = TrackerCategoryStore().fetchCategories()
         visibleTrackerCategories.removeAll()
-        for category in trackerCategories {
-            guard let trackers = category.trackers else { continue }
-            for tracker in trackers {
-                guard let tracker = tracker as? TrackersCoreData else { continue }
-                guard let scheduleData = tracker.schedule as? Data else { continue }
-                do {
-                    if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
-                        print("Расписание для трекере \(tracker.name ?? ""): \(schedule)")
-                        if schedule.contains(weekday) || tracker.typeTrecker == 1 {
-                            visibleTrackerCategories.append(category)
-                            break
-                        }
-                    }
-                } catch {
-                    print("Ошибка декодирования расписания: \(error)")
-                }
-            }
-        }
+//        for category in trackerCategories {
+//            guard let trackers = category.trackers else { continue }
+//            for tracker in trackers {
+//                guard let tracker = tracker as? TrackersCoreData else { continue }
+//                guard let scheduleData = tracker.schedule as? Data else { continue }
+//                do {
+//                    if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
+//                        print("Расписание для трекере \(tracker.name ?? ""): \(schedule)")
+//                        if schedule.contains(weekday) || tracker.typeTracker == 1 {
+//                            visibleTrackerCategories.append(category)
+//                            break
+//                        }
+//                    }
+//                } catch {
+//                    print("Ошибка декодирования расписания: \(error)")
+//                }
+//            }
+//        }
         checkEmptyState()
         trackersCollectionView.reloadData()
     }
@@ -328,3 +331,17 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
 }
 
 
+extension TrackersViewController: TrackerCategoryStoreDelegate {
+    func trackerCategoryStoreDidChange(_ trackerCategoryStore: TrackerCategoryStore) {
+        
+    }
+    
+    func trackerCategoryStore(_ trackerCategoryStore: TrackerCategoryStore, didFetchCategories categories: [TrackersCategoryCoreData]) {
+        self.visibleTrackerCategories = categories
+        trackersCollectionView.reloadData()
+    }
+    
+    func trackerCategoryStore(_ trackerCategoryStore: TrackerCategoryStore, didFailWithError error: Error) {
+        // Обработка ошибки при получении данных
+    }
+}
