@@ -215,7 +215,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         totalHeight += titleColor.frame.height
         totalHeight += colorCollectionView.frame.height
         
-        totalHeight += 140
+        totalHeight += 145
         return totalHeight
     }
     
@@ -236,7 +236,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         setupTableView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         setupTableView.leadingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
         setupTableView.trailingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
-        setupTableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight()+30).isActive = true
+        setupTableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight()+35).isActive = true
         
         contentView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
