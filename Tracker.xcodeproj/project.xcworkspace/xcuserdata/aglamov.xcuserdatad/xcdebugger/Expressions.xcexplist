@@ -20,13 +20,13 @@
          contextName = "TrackerCreation2ViewController.updateSaveButtonAvailability(): TrackerCreation2Controller.swift">
          <PersistentStrings>
             <PersistentString
-               value = "isScheduleSelected">
+               value = "isCategorySelected">
             </PersistentString>
             <PersistentString
                value = "trackerNameTextField.text?.isEmpty">
             </PersistentString>
             <PersistentString
-               value = "isCategorySelected">
+               value = "isScheduleSelected">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -180,6 +180,9 @@
             </PersistentString>
             <PersistentString
                value = "visibleTrackerCategories[section].trackers?.count">
+            </PersistentString>
+            <PersistentString
+               value = "trackersInCategory?.count">
             </PersistentString>
             <PersistentString
                value = "visibleTrackerCategories">

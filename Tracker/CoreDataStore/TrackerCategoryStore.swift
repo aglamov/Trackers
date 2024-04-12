@@ -122,7 +122,7 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
                             do {
                                 if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
      
-                                    if schedule.contains(weekday) {
+                                    if schedule.contains(weekday) || tracker.typeTracker == 1 {
                                         categoriesWithTrackersOnWeekday.append(category)
                                         break
                                     }
