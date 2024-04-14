@@ -8,26 +8,26 @@
 import Foundation
 import UIKit
 
-let emojis = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
+let emojis = ["🙂", "😇", "🥦", "😻", "😡", "🏓", "🌺", "🥶", "🥇", "🐶", "🤔", "🎸", "❤️", "🙌", "🏝️", "😱", "🍔",  "😪"]
 
 
 let colors = [
     UIColor.yPink,
-    UIColor.yLightBrown,
-    UIColor.yBrightBlue,
-    UIColor.yBrightLilac,
-    UIColor.yGreen,
-    UIColor.yOrchid,
     UIColor.yPalePink,
-    UIColor.yLightBlue,
-    UIColor.yLightTurquoise,
-    UIColor.yDeepPurple,
-    UIColor.yTomato,
-    UIColor.yShinyPurplishPink,
     UIColor.yBuffaloLeather,
+    UIColor.yLightBrown,
+    UIColor.yLightBlue,
     UIColor.yCornflowerBlue,
+    UIColor.yBrightBlue,
+    UIColor.yLightTurquoise,
     UIColor.yBluePurple,
+    UIColor.yBrightLilac,
+    UIColor.yDeepPurple,
     UIColor.yModerateOrchid,
+    UIColor.yGreen,
+    UIColor.yTomato,
     UIColor.yModerateSlateBlue,
+    UIColor.yOrchid,
+    UIColor.yShinyPurplishPink,
     UIColor.yLimeGreen,
 ]

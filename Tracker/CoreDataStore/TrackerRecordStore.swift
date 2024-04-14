@@ -44,11 +44,15 @@ class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
             }
             
             let newRecord = TrackersRecordCoreData(context: context)
-            newRecord.date = date
+            
+            let calendar = Calendar.current
+            let startOfDay = calendar.startOfDay(for: date)
+            newRecord.date = startOfDay
             newRecord.trackers = trackerInContext
         
             do {
                 try context.save()
+                print("Создана запись на дату \(date) с идентификтором \(tracker.id)")
             } catch {
                 print("Ошибка при создании и сохранении записи трекера на дату \(date): \(error.localizedDescription)")
             }
@@ -79,6 +83,7 @@ class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
     }
     
     func removeRecord(trackerID: UUID, date: Date) {
+        
         let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "ANY trackers.id == %@ AND date == %@", trackerID as CVarArg, date as CVarArg)
         
@@ -110,6 +115,23 @@ class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
         }
     }
     
+    func doesRecordExist(forTrackerID trackerID: UUID, date: Date) -> Bool {
+        let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+      
+        fetchRequest.predicate = NSPredicate(format: "date == %@ AND ANY trackers.id == %@", startOfDay as CVarArg, trackerID as CVarArg)
+        
+        do {
+            let count = try context.count(for: fetchRequest)
+            fetchAndPrintRecords(forTrackerID: trackerID)
+            return count > 0
+        } catch {
+            print("Error fetching record count: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     private func fetchRecord(with id: UUID, context: NSManagedObjectContext) -> TrackersRecordCoreData? {
         let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
@@ -154,4 +176,24 @@ class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
             return 0
         }
     }
+    
+   private func fetchAndPrintRecords(forTrackerID trackerID: UUID) {
+        let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "ANY trackers.id == %@", trackerID as CVarArg)
+        
+        do {
+            let records = try context.fetch(fetchRequest)
+            if records.isEmpty {
+                print("No records found for tracker with ID \(trackerID)")
+            } else {
+                print("Records for tracker with ID \(trackerID):")
+                for record in records {
+                    print("- \(record)")
+                }
+            }
+        } catch {
+            print("Error fetching records for tracker with ID \(trackerID): \(error.localizedDescription)")
+        }
+    }
+
 }

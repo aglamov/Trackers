@@ -233,7 +233,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         print("Количество записей с таким трекером \(recordCount)")
         cell.countLabel.text = "\(recordCount) \(dayString(for: recordCount))"
         
-        let isCompleted = isTrackerCompleted(trackerID, date: currentDate)
+        let isCompleted = trackerRecordStore.doesRecordExist(forTrackerID: trackerID, date: currentDate)
         print("На дату \(currentDate) трекер выполнен \(isCompleted)")
         cell.addButton.isSelected = isCompleted
     }
@@ -323,6 +323,12 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         let calendar = Calendar.current
         return calendar.component(.weekday, from: date)
     }
+    
+    private func updateCellUIAndButtonForVisibleCells() {
+            for case let cell as TrackerCell in trackersCollectionView.visibleCells {
+                updateCellUIAndButton(for: cell)
+            }
+        }
 }
 
 

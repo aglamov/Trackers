@@ -20,13 +20,13 @@
          contextName = "TrackerCreation2ViewController.updateSaveButtonAvailability(): TrackerCreation2Controller.swift">
          <PersistentStrings>
             <PersistentString
-               value = "isCategorySelected">
+               value = "isScheduleSelected">
             </PersistentString>
             <PersistentString
                value = "trackerNameTextField.text?.isEmpty">
             </PersistentString>
             <PersistentString
-               value = "isScheduleSelected">
+               value = "isCategorySelected">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -193,6 +193,14 @@
          contextName = "TrackerManager.shared.unsafeMutableAddressor:TrackerManager.swift">
       </ContextState>
       <ContextState
+         contextName = "TrackerRecordStore.fetchRecords(forTrackerID:date:):TrackerRecordStore.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "records">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "closure #1 in TrackersViewController.setDateForTrackers(_:):TrackersController.swift">
          <PersistentStrings>
             <PersistentString
@@ -295,6 +303,9 @@
          contextName = "closure #1 in closure #1 in TrackersViewController.setDateForTrackers(_:):TrackersController.swift">
       </ContextState>
       <ContextState
+         contextName = "TrackersViewController.updateCellUIAndButtonForVisibleCells():TrackersController.swift">
+      </ContextState>
+      <ContextState
          contextName = "kevent_id:(null)">
          <PersistentStrings>
             <PersistentString
@@ -326,6 +337,14 @@
          <PersistentStrings>
             <PersistentString
                value = "trackerCategories">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackersViewController.updateCellUIAndButton(for:):TrackersController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "currentDate">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
