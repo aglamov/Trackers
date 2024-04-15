@@ -83,9 +83,11 @@ class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
     }
     
     func removeRecord(trackerID: UUID, date: Date) {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
         
         let fetchRequest: NSFetchRequest<TrackersRecordCoreData> = TrackersRecordCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "ANY trackers.id == %@ AND date == %@", trackerID as CVarArg, date as CVarArg)
+        fetchRequest.predicate = NSPredicate(format: "ANY trackers.id == %@ AND date == %@", trackerID as CVarArg, startOfDay as CVarArg)
         
         do {
             let records = try context.fetch(fetchRequest)

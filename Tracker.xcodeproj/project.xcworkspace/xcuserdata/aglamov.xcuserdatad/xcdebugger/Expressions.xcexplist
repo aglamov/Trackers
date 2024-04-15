@@ -129,6 +129,9 @@
             <PersistentString
                value = "TrackerRecord">
             </PersistentString>
+            <PersistentString
+               value = "cell.addButton.isSelected">
+            </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
@@ -138,6 +141,9 @@
                value = "tableView(setupTableView, heightForRowAt: indexPath)&#10;        totalHeight += height">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackerRecordStore.doesRecordExist(forTrackerID:date:):TrackerRecordStore.swift">
       </ContextState>
       <ContextState
          contextName = "TrackerCategoryViewController.tableView(_:didSelectRowAt:):TrackerCategory.swift">

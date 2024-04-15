@@ -80,8 +80,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "172"
             endingLineNumber = "172"
-            landmarkName = "viewDidLoad()"
-            landmarkType = "7">
+            landmarkName = "TrackersViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -126,26 +126,10 @@
             filePath = "Tracker/Controllers/TrackersController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "265"
-            endingLineNumber = "265"
-            landmarkName = "isTrackerCompleted(_:date:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A818A876-2C39-4F09-9BD9-505537BF0CF8"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tracker/Controllers/TrackersController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "229"
-            endingLineNumber = "229"
-            landmarkName = "updateCellUIAndButton(for:)"
-            landmarkType = "7">
+            startingLineNumber = "266"
+            endingLineNumber = "266"
+            landmarkName = "TrackersViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -158,8 +142,8 @@
             filePath = "Tracker/CoreDataStore/TrackerRecordStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
             landmarkName = "countRecords(forTrackerID:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -174,8 +158,8 @@
             filePath = "Tracker/CoreDataStore/TrackerRecordStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
+            startingLineNumber = "175"
+            endingLineNumber = "175"
             landmarkName = "countRecords(forTrackerID:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -190,8 +174,8 @@
             filePath = "Tracker/CoreDataStore/TrackerRecordStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "166"
-            endingLineNumber = "166"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
             landmarkName = "countRecords(forTrackerID:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -208,8 +192,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "56"
             endingLineNumber = "56"
-            landmarkName = "numberOfSections(in:)"
-            landmarkType = "7">
+            landmarkName = "TrackersViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -224,14 +208,30 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "75"
             endingLineNumber = "75"
-            landmarkName = "collectionView(_:viewForSupplementaryElementOfKind:at:)"
-            landmarkType = "7">
+            landmarkName = "TrackersViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "059F82BD-9C31-4A06-8C1B-C7159047AF10"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tracker/Controllers/TrackersController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "292"
+            endingLineNumber = "292"
+            landmarkName = "setDateForTrackers(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "899080E5-76B9-4F4C-824D-EFD9D97228A2"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -247,22 +247,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "899080E5-76B9-4F4C-824D-EFD9D97228A2"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tracker/Controllers/TrackersController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "290"
-            endingLineNumber = "290"
-            landmarkName = "setDateForTrackers(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "E2D89C6D-8B31-4F84-B0F6-1BA6EFD95D66"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -270,9 +254,9 @@
             filePath = "Tracker/Controllers/TrackersController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "341"
-            endingLineNumber = "341"
-            landmarkName = "trackerCategoryStore(_:didFetchCategories:)"
+            startingLineNumber = "336"
+            endingLineNumber = "336"
+            landmarkName = "trackerCategoryStoreDidChange(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -311,22 +295,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EE05A476-8F34-4496-B9AF-B768CF078238"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tracker/Controllers/TrackersController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "328"
-            endingLineNumber = "328"
-            landmarkName = "updateCellUIAndButtonForVisibleCells()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "974A07B9-95FC-43C5-B45D-E7201F566D82"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -336,7 +304,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "93"
             endingLineNumber = "93"
-            landmarkName = "collectionView(_:willDisplay:forItemAt:)"
+            landmarkName = "collectionView(_:layout:insetForSectionAt:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -350,8 +318,8 @@
             filePath = "Tracker/CoreDataStore/TrackerRecordStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
             landmarkName = "fetchRecords(forTrackerID:date:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -382,9 +350,25 @@
             filePath = "Tracker/CoreDataStore/TrackerRecordStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "123"
-            endingLineNumber = "123"
+            startingLineNumber = "125"
+            endingLineNumber = "125"
             landmarkName = "doesRecordExist(forTrackerID:date:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "55E3701A-EE5F-4725-8330-DB4029AE913B"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tracker/Controllers/TrackersController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "249"
+            endingLineNumber = "249"
+            landmarkName = "doneButtonTapped(in:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

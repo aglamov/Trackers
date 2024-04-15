@@ -32,7 +32,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
                 let colorCell = tracker.color as? UIColor
                 cell.containerView.backgroundColor = colorCell
                 cell.emoji.text = tracker.emoji
-                cell.containerEmoji.backgroundColor = colorCell?.withAlphaComponent(0.2)
+                cell.addButton.tintColor = colorCell
                 cell.delegate = self
                 cell.currentDate = currentDate
                 cell.updateButtonAvailability(for: currentDate)
@@ -258,6 +258,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
             cell.addButton.isSelected = false
         }
         trackersCollectionView.reloadData()
+        
     }
     
     private func isTrackerCompleted(_ trackerID: UUID, date: Date) -> Bool {
@@ -323,12 +324,6 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         let calendar = Calendar.current
         return calendar.component(.weekday, from: date)
     }
-    
-    private func updateCellUIAndButtonForVisibleCells() {
-            for case let cell as TrackerCell in trackersCollectionView.visibleCells {
-                updateCellUIAndButton(for: cell)
-            }
-        }
 }
 
 
