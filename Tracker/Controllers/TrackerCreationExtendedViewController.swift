@@ -215,7 +215,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         totalHeight += titleColor.frame.height
         totalHeight += colorCollectionView.frame.height
         
-        totalHeight += 140
+        totalHeight += 145
         return totalHeight
     }
     
@@ -236,7 +236,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         setupTableView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         setupTableView.leadingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
         setupTableView.trailingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
-        setupTableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight()+30).isActive = true
+        setupTableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight()+35).isActive = true
         
         contentView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
@@ -305,22 +305,15 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         let emoji = emojis[selectedEmojiIndexPath!.item]
         let schedule: [Int] = selectedIndexes
         let isPinned = false
-        let typeTrecker: Int16 = selectedType.rawValue
-        
-      //  let newTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTrecker: typeTrecker)
+        let typeTracker: Int16 = selectedType.rawValue
         
         let trackerStore = TrackerStore()
-        trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTrecker: typeTrecker)
+        trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTracker: typeTracker)
         
+        let tracker = trackerStore.fetchTracker(with: id)!
+
         let categoryStore = TrackerCategoryStore()
-        categoryStore.createCategory(name: selectedCategory, trackerID: id)
-        
-//        if TrackerCategoryManager.shared.trackerCategories.contains(where: { $0.name == selectedCategory }) {
-//            TrackerCategoryManager.shared.addTrackerToCategory(newTracker, categoryName: selectedCategory)
-//        } else {
-//            let newCategory = TrackerCategory(name: selectedCategory, trackers: [newTracker])
-//            TrackerCategoryManager.shared.addNewTrackerCategories(newCategory)
-//        }
+        categoryStore.createCategory(name: selectedCategory, tracker: tracker)
         
         let tabBarController = TabBarController.shared
         tabBarController.navigationItem.hidesBackButton = true

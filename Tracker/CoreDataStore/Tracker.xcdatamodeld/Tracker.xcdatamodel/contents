@@ -6,7 +6,7 @@
     </entity>
     <entity name="TrackerRecord" representedClassName="TrackerRecordCoreData" syncable="YES" codeGenerationType="class">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="trackers" toMany="YES" deletionRule="Nullify" destinationEntity="Trackers" inverseName="trackerRecords" inverseEntity="Trackers"/>
+        <relationship name="trackers" maxCount="1" deletionRule="Nullify" destinationEntity="Trackers" inverseName="trackerRecords" inverseEntity="Trackers"/>
     </entity>
     <entity name="Trackers" representedClassName="TrackerCoreData" syncable="YES" codeGenerationType="class">
         <attribute name="color" attributeType="Transformable" valueTransformerName="ColorTransformer"/>
@@ -17,6 +17,6 @@
         <attribute name="schedule" attributeType="Transformable"/>
         <attribute name="typeTrecker" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="trackerCategorys" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TrackerCategory" inverseName="trackers" inverseEntity="TrackerCategory"/>
-        <relationship name="trackerRecords" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TrackerRecord" inverseName="trackers" inverseEntity="TrackerRecord"/>
+        <relationship name="trackerRecords" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerRecord" inverseName="trackers" inverseEntity="TrackerRecord"/>
     </entity>
 </model>

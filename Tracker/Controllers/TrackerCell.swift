@@ -12,7 +12,6 @@ protocol TrackerCellDelegate: AnyObject {
 }
 
 class TrackerCell: UICollectionViewCell {
-  //  weak var delegate: TrackersViewControllerProtocol?
     weak var delegate: TrackerCellDelegate?
     var id: UUID?
     var currentDate: Date?
@@ -27,7 +26,8 @@ class TrackerCell: UICollectionViewCell {
     let containerEmoji: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 10
+        view.backgroundColor = .white.withAlphaComponent(0.2)
+        view.layer.cornerRadius = 12
         return view
     }()
     
@@ -35,6 +35,7 @@ class TrackerCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
+        label.backgroundColor = .clear
         return label
     }()
     
@@ -66,7 +67,6 @@ class TrackerCell: UICollectionViewCell {
         let preCheckmarkImage = UIImage(systemName: "plus.circle.fill", withConfiguration: configuration)
         button.setImage(checkmarkImage, for: .selected)
         button.setImage(preCheckmarkImage, for: .normal)
-        button.tintColor = .yGreen
         
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
@@ -76,11 +76,11 @@ class TrackerCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(containerView)
-        containerView.addSubview(containerEmoji)
-        containerView.addSubview(emoji)
         contentView.addSubview(titleLabel)
         contentView.addSubview(countLabel)
         contentView.addSubview(addButton)
+        containerView.addSubview(containerEmoji)
+        containerEmoji.addSubview(emoji)
         
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -114,7 +114,6 @@ class TrackerCell: UICollectionViewCell {
     }
     
     func updateButtonAvailability(for date: Date) {
-            // Проверяем, является ли текущая дата будущей
             if date > Date() {
                 addButton.isEnabled = false
             } else {
