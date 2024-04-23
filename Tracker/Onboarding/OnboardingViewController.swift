@@ -75,7 +75,6 @@ class OnboardingViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: false)
         navigationController?.pushViewController(tabBarViewController, animated: true)
         }
-    
 }
 
 
