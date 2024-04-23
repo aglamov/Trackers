@@ -20,13 +20,13 @@
          contextName = "TrackerCreation2ViewController.updateSaveButtonAvailability(): TrackerCreation2Controller.swift">
          <PersistentStrings>
             <PersistentString
-               value = "isScheduleSelected">
+               value = "isCategorySelected">
             </PersistentString>
             <PersistentString
                value = "trackerNameTextField.text?.isEmpty">
             </PersistentString>
             <PersistentString
-               value = "isCategorySelected">
+               value = "isScheduleSelected">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -139,6 +139,14 @@
          <PersistentStrings>
             <PersistentString
                value = "tableView(setupTableView, heightForRowAt: indexPath)&#10;        totalHeight += height">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OnboardingPageViewController.scrollViewWillEndDragging(_:withVelocity:targetContentOffset:):OnboardingPageViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "pages.count ">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -335,6 +343,14 @@
          <PersistentStrings>
             <PersistentString
                value = "currentDate">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OnboardingPageViewController.scrollToNextPage():OnboardingPageViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "pages.count">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
