@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7530A96E2BDC273B001C0B00 /* TrackerCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7530A96D2BDC273B001C0B00 /* TrackerCategoryViewModel.swift */; };
 		753ABACB2BB49AAF00121C37 /* EmojiAndColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753ABACA2BB49AAF00121C37 /* EmojiAndColor.swift */; };
 		753ABACD2BB6BC7600121C37 /* EmojiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753ABACC2BB6BC7600121C37 /* EmojiCollectionViewCell.swift */; };
 		753ABACF2BB6C81100121C37 /* ColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753ABACE2BB6C81100121C37 /* ColorCollectionViewCell.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7530A96D2BDC273B001C0B00 /* TrackerCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryViewModel.swift; sourceTree = "<group>"; };
 		753ABACA2BB49AAF00121C37 /* EmojiAndColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiAndColor.swift; sourceTree = "<group>"; };
 		753ABACC2BB6BC7600121C37 /* EmojiCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionViewCell.swift; sourceTree = "<group>"; };
 		753ABACE2BB6C81100121C37 /* ColorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 			children = (
 				75C6771C2B604FA80046422B /* TrackerType.swift */,
 				753ABACA2BB49AAF00121C37 /* EmojiAndColor.swift */,
+				7530A96D2BDC273B001C0B00 /* TrackerCategoryViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 				758415C92B62E6CA002B1E83 /* TrackerCreationExtendedViewController.swift in Sources */,
 				758415D52B754B86002B1E83 /* CategoryCreationViewController.swift in Sources */,
 				758415D12B6FE45C002B1E83 /* TrackerCell.swift in Sources */,
+				7530A96E2BDC273B001C0B00 /* TrackerCategoryViewModel.swift in Sources */,
 				758415D32B717C9D002B1E83 /* HeaderView.swift in Sources */,
 				75674BE22BD81C89000D0EBB /* OnboardingPageViewController.swift in Sources */,
 				75C3B2A52BB8C892009581FF /* TrackerRecordStore.swift in Sources */,

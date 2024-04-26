@@ -4,7 +4,6 @@
 //
 //  Created by Рамиль Аглямов on 29.01.2024.
 
-import Foundation
 import UIKit
 
 protocol CategorySelectionDelegate: AnyObject {
@@ -13,22 +12,23 @@ protocol CategorySelectionDelegate: AnyObject {
 
 final class TrackerCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate  {
     
-    private var categories = ["Важное", "Самореализация"]
     private var selectedIndexPath: IndexPath?
     weak var delegate: CategorySelectionDelegate?
     var selectedCategory: String = ""
-    
+    private var viewModel: TrackerCategoryViewModel!
+    private var tableView: UITableView!
+        
     func didSelectCategory(_ category: String) {
         delegate?.didSelectCategory(category)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return viewModel.categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = categories[indexPath.row]
+            cell.textLabel?.text = viewModel.categories[indexPath.row]
         
         if let selectedIndexPath = selectedIndexPath, indexPath == selectedIndexPath {
             cell.accessoryType = .checkmark
@@ -45,7 +45,7 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
             selectedCategory = ""
         } else {
             selectedIndexPath = indexPath
-            selectedCategory = categories[indexPath.row]
+            selectedCategory = viewModel.categories[indexPath.row]
         }
         tableView.reloadData()
         updateCreateCategoryButtonTitle()
@@ -56,12 +56,12 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
     }
     
     private func updateCreateCategoryButtonTitle() {
-            if selectedCategory == "" {
-                saveButton.setTitle("Создать категорию", for: .normal)
-            } else {
-                saveButton.setTitle("Готово", for: .normal)
-            }
+        if selectedCategory == "" {
+            saveButton.setTitle("Создать категорию", for: .normal)
+        } else {
+            saveButton.setTitle("Готово", for: .normal)
         }
+    }
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -109,6 +109,9 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
         view.addSubview(titleLabel)
         view.addSubview(setupTableView)
         view.addSubview(saveButton)
+            
+        
+        setupViewModel()
         setupTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         setupConstraints()
         updateCreateCategoryButtonTitle()
@@ -132,7 +135,7 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
     @objc func saveButtonTapped() {
         if selectedCategory.isEmpty {
             let categoryCreationVC = CategoryCreationViewController()
-            categoryCreationVC.delegate = self 
+            categoryCreationVC.delegate = self
             present(categoryCreationVC, animated: true, completion: nil)
         } else {
             delegate?.didSelectCategory(selectedCategory)
@@ -142,11 +145,20 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
             }
         }
     }
+    
+    private func setupViewModel() {
+        viewModel = TrackerCategoryViewModel(categoryStore: TrackerCategoryStore())
+        viewModel.updateUI = { [weak self] in
+            self?.setupTableView.reloadData()
+        }
+    }
 }
 
 extension TrackerCategoryViewController: CategoryCreationDelegate {
     func didCreatCategory(_ category: String) {
-        categories.append(category)
-        setupTableView.reloadData()
+        viewModel.createCategory(name: category)
+        DispatchQueue.main.async { [weak self] in
+               self?.setupTableView.reloadData()
+           }
     }
 }
