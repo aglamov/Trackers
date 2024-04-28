@@ -13,7 +13,7 @@ class OnboardingViewController: UIViewController {
     var labelText: String?
     var imageName: String?
     
-    private let label: UILabel = {
+    private lazy var label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
@@ -21,15 +21,15 @@ class OnboardingViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-    
-    private let imageView: UIImageView = {
+
+    private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-    
-    private let button: UIButton = {
+
+    private lazy var button: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .black

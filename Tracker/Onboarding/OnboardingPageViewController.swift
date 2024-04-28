@@ -40,9 +40,6 @@ class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDa
         let secondPage = OnboardingViewController()
         secondPage.labelText = "Даже если это не литры воды и йога"
         secondPage.imageName = "2"
-        let thirdPage = OnboardingViewController()
-        thirdPage.labelText = ""
-        thirdPage.imageName = ""
         
         pages = [firstPage, secondPage]
         

@@ -15,16 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let onboardingSkipped = UserDefaults.standard.bool(forKey: "OnboardingSkipped")
-        if !onboardingSkipped {
-            let onboardingPageViewController = OnboardingPageViewController()
-            let navigationController = UINavigationController(rootViewController: onboardingPageViewController)
-            window?.rootViewController = navigationController
-        } else {
-            let tabBarViewController = TabBarController()
-            let navigationController = UINavigationController(rootViewController: tabBarViewController)
-            window?.rootViewController = navigationController
-        }
+        setupRootViewController()
     
         window?.makeKeyAndVisible()
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -32,6 +23,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
     }
+    
+    func setupRootViewController() {
+        let navigationController = UINavigationController()
+        let onboardingSkipped = UserDefaults.standard.bool(forKey: "OnboardingSkipped")
+        
+        if onboardingSkipped {
+            let tabBarViewController = TabBarController()
+            navigationController.setViewControllers([tabBarViewController], animated: false)
+        } else {
+            let onboardingPageViewController = OnboardingPageViewController()
+            navigationController.setViewControllers([onboardingPageViewController], animated: false)
+            UserDefaults.standard.set(true, forKey: "OnboardingSkipped")
+        }
+
+        window?.rootViewController = navigationController
+    }
+
     
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
