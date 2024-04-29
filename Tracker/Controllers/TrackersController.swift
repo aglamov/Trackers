@@ -342,3 +342,39 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
       
     }
 }
+
+extension TrackersViewController {
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            return self.makeContextMenu(for: indexPath)
+        }
+    }
+
+    private func makeContextMenu(for indexPath: IndexPath) -> UIMenu {
+        let pinAction = UIAction(title: "Закрепить", image: nil, identifier: nil) { _ in
+            self.pinMenuItemTapped()
+        }
+        
+        let editAction = UIAction(title: "Редактировать", image: nil, identifier: nil) { _ in
+            self.editMenuItemTapped()
+        }
+        
+        let deleteAction = UIAction(title: "Удалить", image: nil, identifier: nil) { _ in
+            self.deleteMenuItemTapped()
+        }
+
+        return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+    }
+
+    @objc private func pinMenuItemTapped() {
+        
+    }
+    
+    @objc private func editMenuItemTapped() {
+        
+    }
+
+    @objc private func deleteMenuItemTapped() {
+        
+    }
+}
