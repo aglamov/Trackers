@@ -79,8 +79,7 @@ class TrackerStore: NSObject, NSFetchedResultsControllerDelegate{
             return nil
         }
     }
-    
-    
+        
     func fetchTracker(with id: UUID, context: NSManagedObjectContext) -> TrackersCoreData? {
         let fetchRequest: NSFetchRequest<TrackersCoreData> = TrackersCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
@@ -102,8 +101,6 @@ class TrackerStore: NSObject, NSFetchedResultsControllerDelegate{
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Завершение обновления контента
-        // Вы можете выполнить действия, которые нужно выполнить после завершения обновления, например, обновить интерфейс
         delegate?.trackerStoreDidUpdateData()
     }
     

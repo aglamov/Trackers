@@ -10,6 +10,7 @@ import UIKit
 protocol TrackerCellDelegate: AnyObject {
     func doneButtonTapped(in cell: TrackerCell)
     func isPinned(for cell: TrackerCell) -> Bool
+    func editMenuItemTapped(for cell: TrackerCell)
 }
 
 class TrackerCell: UICollectionViewCell {
@@ -184,8 +185,8 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
     }
     
     private func editMenuItemTapped() {
-        // Код для редактирования
-    }
+            delegate?.editMenuItemTapped(for: self)
+        }
 
     private func deleteMenuItemTapped(for cell: TrackerCell) {
         guard let trackerID = cell.id else {
@@ -193,13 +194,5 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
         }
         let trackerStore = TrackerStore()
         trackerStore.deleteTracker(with: trackerID)
-        
-        // Обновляем данные в коллекции или другом представлении
-        // Например, если у вас есть массив `visibleTrackerCategories`, вы можете удалить трекер из него.
-        // Не забудьте также обновить представление после удаления трекера
-        
-        // Обновление представления после удаления
-        // Например:
-        // collectionView.reloadData()
     }
 }

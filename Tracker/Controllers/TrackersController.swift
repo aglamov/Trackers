@@ -7,6 +7,7 @@
 import UIKit
 
 final class TrackersViewController: UIViewController, TrackerCellDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
     let categoryStore = TrackerCategoryStore()
     let trackerStore = TrackerStore()
     let coreDataStore = CoreDataStore()
@@ -356,3 +357,19 @@ extension TrackersViewController: TrackerStoreDelegate {
     }
 }
 
+extension TrackersViewController {
+    func editMenuItemTapped(for cell: TrackerCell) {
+        guard let trackerID = cell.id else {
+            return
+        }
+        
+        let trackerStore = TrackerStore()
+        guard let tracker = trackerStore.fetchTracker(with: trackerID) else {
+            return
+        }
+        
+        let trackerEditViewController = TrackerEditViewController(tracker: tracker)
+        trackerEditViewController.modalPresentationStyle = .fullScreen
+        present(trackerEditViewController, animated: true, completion: nil)
+    }
+}

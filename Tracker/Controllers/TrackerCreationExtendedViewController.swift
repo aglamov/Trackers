@@ -7,7 +7,7 @@
 import Foundation
 import UIKit
 
-final class TrackerCreationExtendedViewController: UIViewController  {
+class TrackerCreationExtendedViewController: UIViewController  {
     
     var selectedType: TrackerType
     var selectedCategory: String = ""
@@ -37,7 +37,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return view
     }()
     
-    private lazy var titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Новая привычка"
         label.textAlignment = .center
@@ -46,7 +46,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return label
     }()
     
-    private lazy var trackerNameTextField: UITextField = {
+    lazy var trackerNameTextField: UITextField = {
         let textField = UITextField()
         textField.backgroundColor = .yBackground
         textField.layer.cornerRadius = 16
@@ -72,7 +72,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return button
     }()
     
-    private lazy var saveButton: UIButton = {
+    lazy var saveButton: UIButton = {
         let button = UIButton()
         button.setTitle("Создать", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -108,7 +108,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return label
     }()
     
-    private lazy var emojiCollectionView: UICollectionView = {
+    lazy var emojiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 10
@@ -133,7 +133,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return label
     }()
     
-    private lazy var colorCollectionView: UICollectionView = {
+    lazy var colorCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 10
@@ -294,11 +294,11 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         navigationController?.present(navController, animated: true, completion: nil)
     }
     
-    @objc private func cancelButtonTapped() {
+    @objc  func cancelButtonTapped() {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc private func saveButtonTapped() {
+    @objc  func saveButtonTapped() {
         let id = UUID()
         let name = trackerNameTextField.text ?? ""
         let color = colors[selectedColorIndexPath!.item]
@@ -311,7 +311,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTracker: typeTracker)
         
         let tracker = trackerStore.fetchTracker(with: id)!
-
+        
         let categoryStore = TrackerCategoryStore()
         categoryStore.createCategory(name: selectedCategory, tracker: tracker)
         
@@ -422,7 +422,6 @@ extension TrackerCreationExtendedViewController: UICollectionViewDataSource {
 }
 
 extension TrackerCreationExtendedViewController: UICollectionViewDelegate {
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         for visibleIndexPath in collectionView.indexPathsForVisibleItems {
             if let cell = collectionView.cellForItem(at: visibleIndexPath) {
