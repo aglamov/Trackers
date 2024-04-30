@@ -105,4 +105,12 @@ class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         // Завершение обновления контента
         // Вы можете выполнить действия, которые нужно выполнить после завершения обновления, например, обновить интерфейс
     }
+    
+    func save() {
+            do {
+                try context.save()
+            } catch {
+                print("Failed to save changes: \(error)")
+            }
+        }
 }

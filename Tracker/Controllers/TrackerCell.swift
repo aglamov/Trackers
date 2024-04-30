@@ -141,7 +141,7 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
                 }
             } else {
                 pinAction = UIAction(title: "Закрепить", image: UIImage(systemName: "pin")) { _ in
-                    self.pinMenuItemTapped()
+                    self.pinMenuItemTapped(for: self)
                 }
             }
             
@@ -155,10 +155,18 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
         }
     }
 
-    private func pinMenuItemTapped() {
-        // Код для закрепления
+    private func pinMenuItemTapped(for cell: TrackerCell) {
+        guard let trackerID = cell.id else {
+            return
+        }
+        let trackerStore = TrackerStore()
+        guard let tracker = trackerStore.fetchTracker(with: trackerID) else {
+            return
+        }
+        tracker.isPinned = true
+        trackerStore.save()
     }
-    
+
     private func unpinMenuItemTapped() {
         // Код для открепления
     }
