@@ -9,25 +9,25 @@ import Foundation
 import CoreData
 import UIKit
 
-//protocol TrackerStoreDelegate: AnyObject {
-//
-//}
+protocol TrackerStoreDelegate: AnyObject {
+    func trackerStoreDidUpdateData()
+}
 
-class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
+class TrackerStore: NSObject, NSFetchedResultsControllerDelegate{
     static let shared = TrackerStore()
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackersCoreData>!
-  //  weak var delegate: TrackerStoreDelegate?
+    weak var delegate: (TrackerStoreDelegate)?
     
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         try! self.init(context: context)
     }
-
+    
     init(context: NSManagedObjectContext) throws {
         self.context = context
         super.init()
-
+        
         let fetchRequest: NSFetchRequest<TrackersCoreData> = TrackersCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(keyPath: \TrackersCoreData.name, ascending: true)
@@ -58,7 +58,7 @@ class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         } catch {
             print("Error serializing schedule data: \(error.localizedDescription)")
         }
-      
+        
         do {
             try context.save()
             print("New tracker successfully created and saved to the database.")
@@ -79,7 +79,7 @@ class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
             return nil
         }
     }
-
+    
     
     func fetchTracker(with id: UUID, context: NSManagedObjectContext) -> TrackersCoreData? {
         let fetchRequest: NSFetchRequest<TrackersCoreData> = TrackersCoreData.fetchRequest()
@@ -100,17 +100,34 @@ class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         // Начало обновления контента
         // Вы можете выполнить действия, которые нужно выполнить перед началом обновления, например, начать обновление интерфейса
     }
-
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Завершение обновления контента
         // Вы можете выполнить действия, которые нужно выполнить после завершения обновления, например, обновить интерфейс
+        delegate?.trackerStoreDidUpdateData()
     }
     
     func save() {
-            do {
-                try context.save()
-            } catch {
-                print("Failed to save changes: \(error)")
-            }
+        do {
+            try context.save()
+        } catch {
+            print("Failed to save changes: \(error)")
         }
+    }
+    
+    func deleteTracker(with id: UUID) {
+        let fetchRequest: NSFetchRequest<TrackersCoreData> = TrackersCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+
+        do {
+            let trackers = try context.fetch(fetchRequest)
+            if let tracker = trackers.first {
+                context.delete(tracker)
+                try context.save()
+            }
+        } catch {
+            print("Error deleting tracker: \(error)")
+        }
+    }
+
 }

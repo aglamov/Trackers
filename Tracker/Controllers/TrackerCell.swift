@@ -149,8 +149,20 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
                 self.editMenuItemTapped()
             }
             let deleteAction = UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-                self.deleteMenuItemTapped()
-            }
+                            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                            
+                            let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
+                                self.deleteMenuItemTapped(for: self)
+                            }
+                            alertController.addAction(deleteAction)
+                            
+                            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+                            alertController.addAction(cancelAction)
+                            
+                            if let viewController = self.delegate as? UIViewController {
+                                viewController.present(alertController, animated: true, completion: nil)
+                            }
+                        }
             return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
         }
     }
@@ -175,7 +187,19 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
         // Код для редактирования
     }
 
-    private func deleteMenuItemTapped() {
-        // Код для удаления
+    private func deleteMenuItemTapped(for cell: TrackerCell) {
+        guard let trackerID = cell.id else {
+            return
+        }
+        let trackerStore = TrackerStore()
+        trackerStore.deleteTracker(with: trackerID)
+        
+        // Обновляем данные в коллекции или другом представлении
+        // Например, если у вас есть массив `visibleTrackerCategories`, вы можете удалить трекер из него.
+        // Не забудьте также обновить представление после удаления трекера
+        
+        // Обновление представления после удаления
+        // Например:
+        // collectionView.reloadData()
     }
 }

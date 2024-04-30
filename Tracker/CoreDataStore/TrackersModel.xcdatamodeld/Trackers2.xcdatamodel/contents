@@ -13,7 +13,7 @@
         <attribute name="schedule" attributeType="Transformable"/>
         <attribute name="typeTracker" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="trackerCategorys" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TrackersCategoryCoreData" inverseName="trackers" inverseEntity="TrackersCategoryCoreData"/>
-        <relationship name="trackerRecords" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackersRecordCoreData" inverseName="trackers" inverseEntity="TrackersRecordCoreData"/>
+        <relationship name="trackerRecords" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TrackersRecordCoreData" inverseName="trackers" inverseEntity="TrackersRecordCoreData"/>
     </entity>
     <entity name="TrackersRecordCoreData" representedClassName="TrackersRecordCoreData" syncable="YES" codeGenerationType="class">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
