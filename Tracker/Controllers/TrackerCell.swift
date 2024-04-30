@@ -76,11 +76,13 @@ class TrackerCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(containerView)
-        contentView.addSubview(titleLabel)
+        containerView.addSubview(titleLabel)
         contentView.addSubview(countLabel)
         contentView.addSubview(addButton)
         containerView.addSubview(containerEmoji)
         containerEmoji.addSubview(emoji)
+        let interaction = UIContextMenuInteraction(delegate: self)
+        containerView.addInteraction(interaction)
         
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -123,5 +125,35 @@ class TrackerCell: UICollectionViewCell {
     
     @objc func doneButtonTapped(_ sender: UIButton) {
         delegate?.doneButtonTapped(in: self)
+    }
+}
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        let identifier = NSUUID()
+        return UIContextMenuConfiguration(identifier: identifier, previewProvider: nil) { _ in
+            let pinAction = UIAction(title: "Закрепить", image: UIImage(systemName: "pin")) { _ in
+                self.pinMenuItemTapped()
+            }
+            let editAction = UIAction(title: "Редактировать", image: UIImage(systemName: "pencil")) { _ in
+                self.editMenuItemTapped()
+            }
+            let deleteAction = UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+                self.deleteMenuItemTapped()
+            }
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        }
+    }
+
+    private func pinMenuItemTapped() {
+        
+    }
+    
+    private func editMenuItemTapped() {
+        
+    }
+
+    private func deleteMenuItemTapped() {
+        
     }
 }

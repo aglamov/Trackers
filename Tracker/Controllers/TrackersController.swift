@@ -39,10 +39,8 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
                 updateCellUIAndButton(for: cell)
             }
         }
-        
         return cell
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let horizontalInsets: CGFloat = 16 * 3
@@ -57,7 +55,6 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         
         visibleTrackerCategories = carrentTrackerCategories.fetchCategoriesWithTrackersOnWeekday(weekday)
         return visibleTrackerCategories.count
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -65,7 +62,6 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         let weekday = weekdayNumber(for: currentDate)
         let filteredTrackers = trackersForSelectedWeekday(weekday)
         let trackersInCategory = category.trackers?.filtered(using: NSPredicate(format: "SELF IN %@", filteredTrackers))
-        
         return trackersInCategory?.count ?? 0
     }
     
@@ -189,7 +185,6 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
         addButton.tintColor = .black
         navigationBar.topItem?.setLeftBarButton(addButton, animated: true)
-        
         navigationBar.topItem?.title = "Трекеры"
         navigationBar.prefersLargeTitles = true
         navigationBar.topItem?.largeTitleDisplayMode = .always
@@ -319,7 +314,6 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         return filteredTrackers
     }
     
-    
     func weekdayNumber(for date: Date) -> Int {
         let calendar = Calendar.current
         return calendar.component(.weekday, from: date)
@@ -343,38 +337,3 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
     }
 }
 
-extension TrackersViewController {
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            return self.makeContextMenu(for: indexPath)
-        }
-    }
-
-    private func makeContextMenu(for indexPath: IndexPath) -> UIMenu {
-        let pinAction = UIAction(title: "Закрепить", image: nil, identifier: nil) { _ in
-            self.pinMenuItemTapped()
-        }
-        
-        let editAction = UIAction(title: "Редактировать", image: nil, identifier: nil) { _ in
-            self.editMenuItemTapped()
-        }
-        
-        let deleteAction = UIAction(title: "Удалить", image: nil, identifier: nil) { _ in
-            self.deleteMenuItemTapped()
-        }
-
-        return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
-    }
-
-    @objc private func pinMenuItemTapped() {
-        
-    }
-    
-    @objc private func editMenuItemTapped() {
-        
-    }
-
-    @objc private func deleteMenuItemTapped() {
-        
-    }
-}
