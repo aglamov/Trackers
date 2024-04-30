@@ -7,7 +7,6 @@
 import UIKit
 
 final class TrackersViewController: UIViewController, TrackerCellDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
     let categoryStore = TrackerCategoryStore()
     let coreDataStore = CoreDataStore()
     var currentDate: Date = Date()
@@ -16,13 +15,13 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrackerCell", for: indexPath) as! TrackerCell
-    
+        
         let category = visibleTrackerCategories[indexPath.section]
         let weekday = weekdayNumber(for: currentDate)
         let filteredTrackers = trackersForSelectedWeekday(weekday)
-
+        
         if let trackersInCategory = category.trackers?.allObjects as? [TrackersCoreData] {
-           
+            
             let filteredTrackersInCategory = trackersInCategory.filter { filteredTrackers.contains($0) }
             
             if indexPath.item < filteredTrackersInCategory.count {
@@ -256,13 +255,13 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate, UICol
         
     }
     
-    private func isTrackerCompleted(_ trackerID: UUID, date: Date) -> Bool {
-        let recordStore = TrackerRecordStore()
-        if let records = recordStore.fetchRecords(forTrackerID: trackerID, date: date) {
-            return !records.isEmpty
-        }
-        return false
-    }
+    //    private func isTrackerCompleted(_ trackerID: UUID, date: Date) -> Bool {
+    //        let recordStore = TrackerRecordStore()
+    //        if let records = recordStore.fetchRecords(forTrackerID: trackerID, date: date) {
+    //            return !records.isEmpty
+    //        }
+    //        return false
+    //    }
     
     func dayString(for days: Int) -> String {
         if days % 10 == 1 && days % 100 != 11 {
@@ -333,7 +332,22 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
     }
     
     func trackerCategoryStore(_ trackerCategoryStore: TrackerCategoryStore, didFailWithError error: Error) {
-      
+        
     }
 }
+
+extension TrackersViewController {
+    func isPinned(for cell: TrackerCell) -> Bool {
+        guard let trackerID = cell.id else {
+            return false
+        }
+        let trackerStore = TrackerStore()
+        if let tracker = trackerStore.fetchTracker(with: trackerID) {
+            return tracker.isPinned?.boolValue ?? false
+        } else {
+            return false
+        }
+    }
+}
+
 

@@ -9,6 +9,7 @@ import UIKit
 
 protocol TrackerCellDelegate: AnyObject {
     func doneButtonTapped(in cell: TrackerCell)
+    func isPinned(for cell: TrackerCell) -> Bool
 }
 
 class TrackerCell: UICollectionViewCell {
@@ -132,9 +133,18 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let identifier = NSUUID()
         return UIContextMenuConfiguration(identifier: identifier, previewProvider: nil) { _ in
-            let pinAction = UIAction(title: "Закрепить", image: UIImage(systemName: "pin")) { _ in
-                self.pinMenuItemTapped()
+            var pinAction: UIAction
+            let isPinned = self.delegate?.isPinned(for: self) ?? false
+            if isPinned {
+                pinAction = UIAction(title: "Открепить", image: UIImage(systemName: "pin.slash")) { _ in
+                    self.unpinMenuItemTapped()
+                }
+            } else {
+                pinAction = UIAction(title: "Закрепить", image: UIImage(systemName: "pin")) { _ in
+                    self.pinMenuItemTapped()
+                }
             }
+            
             let editAction = UIAction(title: "Редактировать", image: UIImage(systemName: "pencil")) { _ in
                 self.editMenuItemTapped()
             }
@@ -146,14 +156,18 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
     }
 
     private func pinMenuItemTapped() {
-        
+        // Код для закрепления
+    }
+    
+    private func unpinMenuItemTapped() {
+        // Код для открепления
     }
     
     private func editMenuItemTapped() {
-        
+        // Код для редактирования
     }
 
     private func deleteMenuItemTapped() {
-        
+        // Код для удаления
     }
 }

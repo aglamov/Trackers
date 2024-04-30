@@ -20,13 +20,13 @@
          contextName = "TrackerCreation2ViewController.updateSaveButtonAvailability(): TrackerCreation2Controller.swift">
          <PersistentStrings>
             <PersistentString
-               value = "isCategorySelected">
+               value = "isScheduleSelected">
             </PersistentString>
             <PersistentString
                value = "trackerNameTextField.text?.isEmpty">
             </PersistentString>
             <PersistentString
-               value = "isScheduleSelected">
+               value = "isCategorySelected">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -124,13 +124,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "TrackersViewController.doneButtonTapped(in:):TrackersController.swift">
+         contextName = "OnboardingPageViewController.scrollViewWillEndDragging(_:withVelocity:targetContentOffset:):OnboardingPageViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "TrackerRecord">
-            </PersistentString>
-            <PersistentString
-               value = "cell.addButton.isSelected">
+               value = "pages.count ">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -143,10 +140,13 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "OnboardingPageViewController.scrollViewWillEndDragging(_:withVelocity:targetContentOffset:):OnboardingPageViewController.swift">
+         contextName = "TrackersViewController.doneButtonTapped(in:):TrackersController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "pages.count ">
+               value = "TrackerRecord">
+            </PersistentString>
+            <PersistentString
+               value = "cell.addButton.isSelected">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -280,6 +280,14 @@
             </PersistentString>
             <PersistentString
                value = "setupTableView.heightAnchor">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackersViewController.isPinned(for:):TrackersController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "tracker.isPinned">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

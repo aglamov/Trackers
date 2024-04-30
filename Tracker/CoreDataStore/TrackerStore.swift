@@ -9,15 +9,15 @@ import Foundation
 import CoreData
 import UIKit
 
-protocol TrackerStoreDelegate: AnyObject {
-    // Ваши методы и свойства делегата
-}
+//protocol TrackerStoreDelegate: AnyObject {
+//
+//}
 
 class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     static let shared = TrackerStore()
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackersCoreData>!
-    weak var delegate: TrackerStoreDelegate?
+  //  weak var delegate: TrackerStoreDelegate?
     
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -44,7 +44,6 @@ class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     }
     
     func createTracker(id: UUID, name: String, color: UIColor, emoji: String, schedule: [Int], isPinned: Bool, typeTracker: Int16) {
-      //  let context = persistentContainer.viewContext
         let newTracker = TrackersCoreData(context: context)
         newTracker.id = id
         newTracker.name = name
