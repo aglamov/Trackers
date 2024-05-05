@@ -15,6 +15,7 @@ protocol TrackerCellDelegate: AnyObject {
 
 class TrackerCell: UICollectionViewCell {
     weak var delegate: TrackerCellDelegate?
+    weak var presenter: TrackersPresenterProtocol?
     var id: UUID?
     var currentDate: Date?
     
@@ -118,12 +119,12 @@ class TrackerCell: UICollectionViewCell {
     }
     
     func updateButtonAvailability(for date: Date) {
-            if date > Date() {
-                addButton.isEnabled = false
-            } else {
-                addButton.isEnabled = true
-            }
+        if date > Date() {
+            addButton.isEnabled = false
+        } else {
+            addButton.isEnabled = true
         }
+    }
     
     @objc func doneButtonTapped(_ sender: UIButton) {
         delegate?.doneButtonTapped(in: self)
@@ -150,24 +151,24 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
                 self.editMenuItemTapped()
             }
             let deleteAction = UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-                            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-                            
-                            let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
-                                self.deleteMenuItemTapped(for: self)
-                            }
-                            alertController.addAction(deleteAction)
-                            
-                            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
-                            alertController.addAction(cancelAction)
-                            
-                            if let viewController = self.delegate as? UIViewController {
-                                viewController.present(alertController, animated: true, completion: nil)
-                            }
-                        }
+                let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                
+                let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
+                    self.deleteMenuItemTapped(for: self)
+                }
+                alertController.addAction(deleteAction)
+                
+                let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+                alertController.addAction(cancelAction)
+                
+                if let viewController = self.delegate as? UIViewController {
+                    viewController.present(alertController, animated: true, completion: nil)
+                }
+            }
             return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
         }
     }
-
+    
     private func pinMenuItemTapped(for cell: TrackerCell) {
         guard let trackerID = cell.id else {
             return
@@ -179,20 +180,17 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
         tracker.isPinned = true
         trackerStore.save()
     }
-
+    
     private func unpinMenuItemTapped() {
         // Код для открепления
     }
     
     private func editMenuItemTapped() {
-            delegate?.editMenuItemTapped(for: self)
-        }
-
+        delegate?.editMenuItemTapped(for: self)
+    }
+    
     private func deleteMenuItemTapped(for cell: TrackerCell) {
-        guard let trackerID = cell.id else {
-            return
-        }
-        let trackerStore = TrackerStore()
-        trackerStore.deleteTracker(with: trackerID)
+        guard let trackerID = self.id else { return }
+        presenter?.removeButtonTapped(trackerID: trackerID)
     }
 }
