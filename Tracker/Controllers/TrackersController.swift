@@ -10,7 +10,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     
     let categoryStore = TrackerCategoryStore()
     let trackerStore = TrackerStore()
-    let coreDataStore = CoreDataStore()
+//    let coreDataStore = CoreDataStore()
     var currentDate: Date = Date()
     var presenter: TrackersPresenterProtocol?
     
@@ -75,7 +75,6 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
         presenter?.viewController = self
         presenter?.viewDidLoad()
         checkEmptyState()
-        let presenter: TrackersPresenterProtocol = TrackersPresenter()
     }
     
     func checkEmptyState() {
@@ -131,17 +130,6 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
             emptyScreenText.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
-    
-//    private func updateVisibleTrackerCategories() {
-//        trackersCollectionView.delegate = self
-//        categoryStore.delegate = self
-//        categoryStore.fetchCategories()
-//    }
-    
-    //    override func viewWillAppear(_ animated: Bool) {
-    //        super.viewWillAppear(animated)
-    //        presenter?.viewWillAppear()
-    //    }
     
     func updateCellUIAndButton(for cell: TrackerCell) {
         guard let trackerID = cell.id else {
@@ -265,9 +253,7 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
     
     func trackerCategoryStore(_ trackerCategoryStore: TrackerCategoryStore, didFetchCategories categories: [TrackersCategoryCoreData]) {
         presenter?.visibleTrackerCategories = categories
-     //   presenter?.updateVisibleTrackerCategories(currentDate)
-        trackersCollectionView.reloadData()
-        checkEmptyState()
+        presenter?.updateVisibleTrackerCategories(currentDate)
     }
     
     
@@ -292,7 +278,7 @@ extension TrackersViewController {
 
 extension TrackersViewController: TrackerStoreDelegate {
     func trackerStoreDidUpdateData() {
-        presenter?.updateVisibleTrackerCategories(Date())
+        presenter?.updateVisibleTrackerCategories(currentDate)
     }
 }
 

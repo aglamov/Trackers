@@ -457,6 +457,9 @@
             <PersistentString
                value = "visibleTrackerCategories.count">
             </PersistentString>
+            <PersistentString
+               value = "visibleTrackerCategories">
+            </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
