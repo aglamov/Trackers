@@ -139,7 +139,7 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
             let isPinned = self.delegate?.isPinned(for: self) ?? false
             if isPinned {
                 pinAction = UIAction(title: "Открепить", image: UIImage(systemName: "pin.slash")) { _ in
-                    self.unpinMenuItemTapped()
+                    self.unpinMenuItemTapped(for: self)
                 }
             } else {
                 pinAction = UIAction(title: "Закрепить", image: UIImage(systemName: "pin")) { _ in
@@ -181,8 +181,16 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
         trackerStore.save()
     }
     
-    private func unpinMenuItemTapped() {
-        // Код для открепления
+    private func unpinMenuItemTapped(for cell: TrackerCell) {
+        guard let trackerID = cell.id else {
+            return
+        }
+        let trackerStore = TrackerStore()
+        guard let tracker = trackerStore.fetchTracker(with: trackerID) else {
+            return
+        }
+        tracker.isPinned = false
+        trackerStore.save()
     }
     
     private func editMenuItemTapped() {

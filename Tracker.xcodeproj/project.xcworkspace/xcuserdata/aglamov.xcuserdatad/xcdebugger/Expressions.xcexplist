@@ -130,6 +130,20 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "TrackerEditViewController.init(tracker:):TrackerEditViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "selectedDays">
+            </PersistentString>
+            <PersistentString
+               value = "selectedIndexes">
+            </PersistentString>
+            <PersistentString
+               value = "schedule">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "OnboardingPageViewController.scrollViewWillEndDragging(_:withVelocity:targetContentOffset:):OnboardingPageViewController.swift">
          <PersistentStrings>
             <PersistentString
@@ -344,6 +358,9 @@
       <ContextState
          contextName = "TrackersPresenter.numberOfItems(in:):TrackersPresenter.swift">
          <PersistentStrings>
+            <PersistentString
+               value = "visibleTrackerCategories.count">
+            </PersistentString>
             <PersistentString
                value = "filteredTrackersInCategory(category, for: weekday).count">
             </PersistentString>

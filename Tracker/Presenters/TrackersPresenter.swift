@@ -13,11 +13,9 @@ protocol TrackersPresenterProtocol: AnyObject {
     var viewController: TrackersViewController? { get set }
     var visibleTrackerCategories: [TrackersCategoryCoreData] { get set }
     func viewDidLoad()
-    //  func viewWillAppear()
     func numberOfSections() -> Int
     func numberOfItems(in section: Int) -> Int
     func setDateForTrackers(for date: Date)
-    func addButtonTapped(trackerID: Int)
     func removeButtonTapped(trackerID: UUID)
     func filteredTrackersInCategory(_ category: TrackersCategoryCoreData, for weekday: Int) -> [TrackersCoreData]
     func weekdayNumber(for date: Date) -> Int
@@ -37,10 +35,6 @@ class TrackersPresenter: TrackersPresenterProtocol {
         updateVisibleTrackerCategories(currentDate)
     }
     
-    //    func viewWillAppear() {
-    //        viewController?.checkEmptyState()
-    //    }
-    //
     func numberOfSections() -> Int {
         return visibleTrackerCategories.count
     }
@@ -83,10 +77,6 @@ class TrackersPresenter: TrackersPresenterProtocol {
         viewController?.checkEmptyState()
     }
     
-    func addButtonTapped(trackerID: Int) {
-        // Логика добавления трекера
-    }
-    
     func removeButtonTapped(trackerID: UUID) {
         trackerStore.deleteTracker(with: trackerID)
         updateVisibleTrackerCategories(currentDate)
@@ -103,5 +93,4 @@ class TrackersPresenter: TrackersPresenterProtocol {
         let trackers = filteredTrackersInCategory(category, for: weekday)
         return trackers.count > indexPath.row ? trackers[indexPath.row] : nil
     }
-    
 }
