@@ -52,6 +52,8 @@ class TrackerEditViewController: TrackerCreationExtendedViewController {
         titleLabel.text = "Редактирование привычки"
         trackerNameTextField.text = trackerToEdit.name
         saveButton.setTitle("Сохранить", for: .normal)
+        setupTableView.delegate = self
+        setupTableView.dataSource = self
         
         if let trackerEmoji = trackerToEdit.emoji, let emojiIndex = emojis.firstIndex(of: trackerEmoji) {
             selectedEmojiIndexPath = IndexPath(item: emojiIndex, section: 0)
@@ -68,7 +70,6 @@ class TrackerEditViewController: TrackerCreationExtendedViewController {
         if let colorIndexPath = selectedColorIndexPath {
             colorCollectionView.selectItem(at: colorIndexPath, animated: true, scrollPosition: .centeredHorizontally)
         }
-        
         updateSaveButtonAvailability()
     }
     
@@ -88,6 +89,15 @@ class TrackerEditViewController: TrackerCreationExtendedViewController {
             trackerToEdit.schedule = scheduleData as NSObject
         } catch {
             print("Ошибка при сохранении расписания: \(error)")
+        }
+    
+        let categoryStore = TrackerCategoryStore()
+
+        if let existingCategory = categoryStore.fetchCategory(with: selectedCategory) {
+            existingCategory.addToTrackers(trackerToEdit)
+            trackerToEdit.trackerCategorys = existingCategory
+        } else {
+            categoryStore.createCategory(name: selectedCategory, tracker: trackerToEdit)
         }
         
         do {
@@ -133,5 +143,15 @@ class TrackerEditViewController: TrackerCreationExtendedViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         super.collectionView(collectionView, didSelectItemAt: indexPath)
         collectionView.reloadData()
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == 0 {
+            super.categoryButtonTapped()
+        } else if indexPath.row == 1 {
+            super.scheduleButtonTapped()
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

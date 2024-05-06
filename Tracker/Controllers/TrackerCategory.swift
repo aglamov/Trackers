@@ -17,7 +17,7 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
     var selectedCategory: String = ""
     private var viewModel: TrackerCategoryViewModel!
     private var tableView: UITableView!
-        
+    
     func didSelectCategory(_ category: String) {
         delegate?.didSelectCategory(category)
     }
@@ -28,7 +28,7 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-            cell.textLabel?.text = viewModel.categories[indexPath.row]
+        cell.textLabel?.text = viewModel.categories[indexPath.row]
         
         if let selectedIndexPath = selectedIndexPath, indexPath == selectedIndexPath {
             cell.accessoryType = .checkmark
@@ -109,10 +109,15 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
         view.addSubview(titleLabel)
         view.addSubview(setupTableView)
         view.addSubview(saveButton)
-            
         
-        setupViewModel()
         setupTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        setupTableView.dataSource = self
+        setupTableView.delegate = self
+        setupViewModel()
+        
+        if let index = viewModel.categories.firstIndex(of: selectedCategory) {
+            selectedIndexPath = IndexPath(row: index, section: 0)
+        }
         setupConstraints()
         updateCreateCategoryButtonTitle()
     }
@@ -158,7 +163,7 @@ extension TrackerCategoryViewController: CategoryCreationDelegate {
     func didCreatCategory(_ category: String) {
         viewModel.createCategory(name: category)
         DispatchQueue.main.async { [weak self] in
-               self?.setupTableView.reloadData()
-           }
+            self?.setupTableView.reloadData()
+        }
     }
 }

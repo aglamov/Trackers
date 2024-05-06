@@ -84,7 +84,7 @@ class TrackerCreationExtendedViewController: UIViewController  {
         return button
     }()
     
-    private lazy var setupTableView: UITableView = {
+    lazy var setupTableView: UITableView = {
         let planningTableView = UITableView(frame: .zero, style: .insetGrouped)
         planningTableView.translatesAutoresizingMaskIntoConstraints = false
         planningTableView.separatorStyle = .singleLine
@@ -278,18 +278,25 @@ class TrackerCreationExtendedViewController: UIViewController  {
         
     }
     
-    @objc private func scheduleButtonTapped() {
-        let trackerCreation = TrackerSchedule()
-        trackerCreation.delegate = self
-        let navController = UINavigationController(rootViewController: trackerCreation)
+    @objc func scheduleButtonTapped() {
+        let trackerSchedule = TrackerSchedule()
+        trackerSchedule.delegate = self
+        trackerSchedule.selectedWeekdays = selectedIndexes.map { index in
+            if let weekday = trackerSchedule.weekdays.first(where: { $0.2 == index }) {
+                return (weekday.1, index)
+            }
+            return ("", index)
+        }
+        let navController = UINavigationController(rootViewController: trackerSchedule)
         navController.modalPresentationStyle = .fullScreen
         navigationController?.present(navController, animated: true, completion: nil)
     }
     
-    @objc private func categoryButtonTapped() {
-        let trackerCreation = TrackerCategoryViewController()
-        trackerCreation.delegate = self
-        let navController = UINavigationController(rootViewController: trackerCreation)
+    @objc func categoryButtonTapped() {
+        let trackerCategory = TrackerCategoryViewController()
+        trackerCategory.delegate = self
+        trackerCategory.selectedCategory = selectedCategory
+        let navController = UINavigationController(rootViewController: trackerCategory)
         navController.modalPresentationStyle = .fullScreen
         navigationController?.present(navController, animated: true, completion: nil)
     }

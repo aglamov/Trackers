@@ -293,8 +293,15 @@ extension TrackersViewController {
             return
         }
         
+        // Создаем экземпляр контроллера редактирования
         let trackerEditViewController = TrackerEditViewController(tracker: tracker)
-        trackerEditViewController.modalPresentationStyle = .fullScreen
-        present(trackerEditViewController, animated: true, completion: nil)
+
+        // Оборачиваем его в навигационный контроллер
+        let navController = UINavigationController(rootViewController: trackerEditViewController)
+        navController.modalPresentationStyle = .fullScreen
+
+        // Представляем модально
+        present(navController, animated: true, completion: nil)
+
     }
 }
