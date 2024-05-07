@@ -31,6 +31,7 @@ class TrackersPresenter: TrackersPresenterProtocol {
     private let categoryStore = TrackerCategoryStore()
     private var currentDate = Date()
     
+    
     func viewDidLoad() {
         updateVisibleTrackerCategories(currentDate)
     }
@@ -69,6 +70,16 @@ class TrackersPresenter: TrackersPresenterProtocol {
         currentDate = date
         updateVisibleTrackerCategories(currentDate)
     }
+    
+//    func shouldIncludeTracker(_ tracker: TrackersCoreData, weekday: Int) -> Bool {
+//        // Фильтруем по расписанию или типу трекера
+//        if let scheduleData = tracker.schedule,
+//           let schedule = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData as! Data) as? [Int] {
+//            return schedule.contains(weekday) || tracker.typeTracker == 1
+//        } else {
+//            return tracker.typeTracker == 1
+//        }
+//    }
     
     func updateVisibleTrackerCategories(_ date: Date) {
         let weekday = weekdayNumber(for: date)

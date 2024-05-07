@@ -211,7 +211,6 @@ extension TrackersViewController: UICollectionViewDelegate, UICollectionViewData
         return cell
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let horizontalInsets: CGFloat = 16 * 3
         let width: CGFloat = min((collectionView.bounds.width - horizontalInsets) / 2, 196)

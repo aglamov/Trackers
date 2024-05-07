@@ -170,25 +170,45 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
     }
     
     private func pinMenuItemTapped(for cell: TrackerCell) {
+        let trackerStore = TrackerStore()
+        let categoryStore = TrackerCategoryStore()
+        
         guard let trackerID = cell.id else {
             return
         }
-        let trackerStore = TrackerStore()
+        
         guard let tracker = trackerStore.fetchTracker(with: trackerID) else {
             return
         }
-        tracker.isPinned = true
-        trackerStore.save()
+        
+        guard let pinCategory = categoryStore.fetchCategory(with: "Закрепленные") else {
+            return
+        }
+        if let originalCategory =  tracker.trackerCategorys as? TrackersCategoryCoreData {
+            tracker.isPinned = true
+            tracker.originalCategoryID = originalCategory.id
+            tracker.trackerCategorys = pinCategory
+            trackerStore.save()
+        }
+        else {
+            print("Original category not found or is not of the expected type.")
+        }
     }
-    
+        
     private func unpinMenuItemTapped(for cell: TrackerCell) {
+        let categoryStore = TrackerCategoryStore()
+        let trackerStore = TrackerStore()
+        
         guard let trackerID = cell.id else {
             return
         }
-        let trackerStore = TrackerStore()
-        guard let tracker = trackerStore.fetchTracker(with: trackerID) else {
-            return
-        }
+        
+        guard let tracker = trackerStore.fetchTracker(with: trackerID) else {return}
+        
+        guard let originalCategoryID = tracker.originalCategoryID else {return}
+        guard let originCategory = categoryStore.fetchCategoryID(with: originalCategoryID) else {return}
+       
+        tracker.trackerCategorys = originCategory
         tracker.isPinned = false
         trackerStore.save()
     }

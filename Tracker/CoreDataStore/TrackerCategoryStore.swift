@@ -17,11 +17,12 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackersCategoryCoreData>!
     weak var delegate: TrackerCategoryStoreDelegate?
+    private let pinnedCategoryName = "Закрепленные"
     
     override init() {
         self.context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         super.init()
-
+        
         do {
             let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
             fetchRequest.sortDescriptors = [
@@ -39,12 +40,13 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         } catch {
             print("Error initializing fetched results controller: \(error.localizedDescription)")
         }
+        createDefaultCategoryIfNeeded()
     }
     
     init(context: NSManagedObjectContext) throws {
         self.context = context
         super.init()
-
+        
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(keyPath: \TrackersCategoryCoreData.name, ascending: true)
@@ -58,6 +60,24 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         controller.delegate = self
         self.fetchedResultsController = controller
         try controller.performFetch()
+        
+        createDefaultCategoryIfNeeded()
+    }
+    
+    private func createDefaultCategoryIfNeeded() {
+        if fetchCategory(with: pinnedCategoryName) == nil {
+            // Если категории с таким именем нет, создаем новую
+            let defaultCategory = TrackersCategoryCoreData(context: context)
+            defaultCategory.name = pinnedCategoryName
+            defaultCategory.id = UUID()
+            
+            // Сохраняем контекст, чтобы изменения вступили в силу
+            do {
+                try context.save()
+            } catch {
+                print("Error saving default category: \(error.localizedDescription)")
+            }
+        }
     }
     
     func createCategory(name: String, tracker: TrackersCoreData) {
@@ -70,6 +90,7 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         } else {
             let newCategory = TrackersCategoryCoreData(context: context)
             newCategory.name = name
+            newCategory.id = UUID()
             newCategory.addToTrackers(trackerInContext)
         }
         
@@ -85,6 +106,7 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     func createCategoryNameOnly(name: String) {
         let newCategory = TrackersCategoryCoreData(context: context)
         newCategory.name = name
+        newCategory.id = UUID()
         
         do {
             try context.save()
@@ -94,7 +116,7 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
             print("Error saving changes: \(error.localizedDescription)")
         }
     }
-
+    
     
     func fetchCategory(with name: String) -> TrackersCategoryCoreData? {
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
@@ -108,7 +130,20 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
             return nil
         }
     }
-
+    
+    func fetchCategoryID(with ID: UUID) -> TrackersCategoryCoreData? {
+        let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", ID as CVarArg)
+        
+        do {
+            let categories = try context.fetch(fetchRequest)
+            return categories.first
+        } catch {
+            print("Ошибка при поиске категории: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
     func fetchCategories() {
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
         do {
@@ -120,39 +155,40 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     }
     
     func fetchCategoriesWithTrackersOnWeekday(_ weekday: Int) -> [TrackersCategoryCoreData] {
-            var categoriesWithTrackersOnWeekday = [TrackersCategoryCoreData]()
-
-            let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
-
-            do {
-                let categories = try context.fetch(fetchRequest)
-                for category in categories {
-                    guard let trackers = category.trackers else { continue }
-                    for tracker in trackers {
-                        guard let tracker = tracker as? TrackersCoreData else { continue }
-
-                        if let scheduleData = tracker.schedule as? Data {
-                            do {
-                                if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
-     
-                                    if schedule.contains(weekday) || tracker.typeTracker == 1 {
-                                        categoriesWithTrackersOnWeekday.append(category)
-                                        break
-                                    }
+      //  let pinnedCategoryName = "Закрепленные"
+        var categoriesWithTrackersOnWeekday = [TrackersCategoryCoreData]()
+        
+        let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
+        
+        do {
+            let categories = try context.fetch(fetchRequest)
+            for category in categories {
+                guard let trackers = category.trackers else { continue }
+                for tracker in trackers {
+                    guard let tracker = tracker as? TrackersCoreData else { continue }
+                    
+                    if let scheduleData = tracker.schedule as? Data {
+                        do {
+                            if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
+                                
+                                if schedule.contains(weekday) || tracker.typeTracker == 1 {
+                                    categoriesWithTrackersOnWeekday.append(category)
+                                    break
                                 }
-                            } catch {
-                                print("Error deserializing schedule data: \(error.localizedDescription)")
                             }
+                        } catch {
+                            print("Error deserializing schedule data: \(error.localizedDescription)")
                         }
                     }
                 }
-            } catch {
-                print("Error fetching categories: \(error.localizedDescription)")
             }
-
-            return categoriesWithTrackersOnWeekday
+        } catch {
+            print("Error fetching categories: \(error.localizedDescription)")
         }
-
+        
+        return categoriesWithTrackersOnWeekday
+    }
+    
     func getCategories(completion: @escaping ([String]) -> Void) {
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
         do {
@@ -164,12 +200,12 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
             completion([])
         }
     }
-
+    
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
     }
-
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
     }
