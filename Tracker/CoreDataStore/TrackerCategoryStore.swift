@@ -66,10 +66,10 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     
     private func createDefaultCategoryIfNeeded() {
         if fetchCategory(with: pinnedCategoryName) == nil {
-            // Если категории с таким именем нет, создаем новую
             let defaultCategory = TrackersCategoryCoreData(context: context)
             defaultCategory.name = pinnedCategoryName
             defaultCategory.id = UUID()
+            defaultCategory.dataCreation = Date()
             
             // Сохраняем контекст, чтобы изменения вступили в силу
             do {
@@ -91,6 +91,7 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
             let newCategory = TrackersCategoryCoreData(context: context)
             newCategory.name = name
             newCategory.id = UUID()
+            newCategory.dataCreation = Date()
             newCategory.addToTrackers(trackerInContext)
         }
         
@@ -107,6 +108,7 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         let newCategory = TrackersCategoryCoreData(context: context)
         newCategory.name = name
         newCategory.id = UUID()
+        newCategory.dataCreation = Date()
         
         do {
             try context.save()
@@ -116,7 +118,6 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
             print("Error saving changes: \(error.localizedDescription)")
         }
     }
-    
     
     func fetchCategory(with name: String) -> TrackersCategoryCoreData? {
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
@@ -155,9 +156,7 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     }
     
     func fetchCategoriesWithTrackersOnWeekday(_ weekday: Int) -> [TrackersCategoryCoreData] {
-      //  let pinnedCategoryName = "Закрепленные"
         var categoriesWithTrackersOnWeekday = [TrackersCategoryCoreData]()
-        
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
         
         do {
@@ -185,16 +184,19 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         } catch {
             print("Error fetching categories: \(error.localizedDescription)")
         }
-        
-        return categoriesWithTrackersOnWeekday
+        let sortedCategory = categoriesWithTrackersOnWeekday
+            .sorted { $0.dataCreation ?? Date() < $1.dataCreation ?? Date() }
+        return sortedCategory
     }
     
     func getCategories(completion: @escaping ([String]) -> Void) {
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
         do {
             let categories = try context.fetch(fetchRequest)
-            let categoryNames = categories.map { $0.name ?? "" }
-            completion(categoryNames)
+            let sortedCategoryNames = categories
+                .sorted { $0.dataCreation ?? Date() < $1.dataCreation ?? Date() }
+                .map { $0.name ?? "" }
+            completion(sortedCategoryNames)
         } catch {
             print("Error fetching categories: \(error.localizedDescription)")
             completion([])
