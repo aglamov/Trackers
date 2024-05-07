@@ -15,7 +15,7 @@ protocol TrackerCategoryContextMenuDelegate: AnyObject {
     func deleteCategory(name: String)
 }
 
-final class TrackerCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+final class TrackerCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CategoryEditingDelegate {
     weak var contextMenuDelegate: TrackerCategoryContextMenuDelegate?
     private var selectedIndexPath: IndexPath?
     weak var delegate: CategorySelectionDelegate?
@@ -62,7 +62,7 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
         view.addSubview(titleLabel)
         view.addSubview(setupTableView)
         view.addSubview(saveButton)
-        
+        self.contextMenuDelegate = self
         setupConstraints()
         setupViewModel()
         
@@ -118,7 +118,6 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
         }
     }
     
-    // UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.categories.count
     }
@@ -137,13 +136,13 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 75
-        }
+        return 75
+    }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-            cell.backgroundColor = .yBackground
-        }
-    // UITableViewDelegate
+        cell.backgroundColor = .yBackground
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if selectedIndexPath == indexPath {
             selectedIndexPath = nil
@@ -194,5 +193,26 @@ extension TrackerCategoryViewController: CategoryCreationDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.setupTableView.reloadData()
         }
+    }
+    
+    func didEditCategory(oldCategory: String, newCategory: String) {
+        viewModel.editCategory(oldCategory: oldCategory, newCategory: newCategory)
+        selectedCategory = newCategory
+        setupTableView.reloadData()
+    }
+}
+
+extension TrackerCategoryViewController: TrackerCategoryContextMenuDelegate {
+    func editCategory(name: String) {
+        let editingVC = CategoryEditingViewController()
+        editingVC.editDelegate = self
+        editingVC.configureWithCategoryName(name)
+        editingVC.modalPresentationStyle = .formSheet
+        present(editingVC, animated: true, completion: nil)
+    }
+    
+    func deleteCategory(name: String) {
+        viewModel.deleteCategory(name: name)
+        setupTableView.reloadData()
     }
 }

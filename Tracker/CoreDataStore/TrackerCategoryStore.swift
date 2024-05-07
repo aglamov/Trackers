@@ -71,7 +71,6 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
             defaultCategory.id = UUID()
             defaultCategory.dataCreation = Date()
             
-            // Сохраняем контекст, чтобы изменения вступили в силу
             do {
                 try context.save()
             } catch {
@@ -203,6 +202,32 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         }
     }
     
+    func deleteCategory(name: String) {
+        let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+
+        do {
+            if let category = try context.fetch(fetchRequest).first {
+                context.delete(category)
+                try context.save()
+                delegate?.trackerCategoryStoreDidChange(self)
+                print("Категория \(name) успешно удалена.")
+            } else {
+                print("Категория с именем \(name) не найдена.")
+            }
+        } catch {
+            print("Ошибка при удалении категории: \(error.localizedDescription)")
+        }
+    }
+
+    func saveChanges() throws {
+        do {
+            try context.save()
+            print("Changes successfully saved to the database.")
+        } catch {
+            throw error
+        }
+    }
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         

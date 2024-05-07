@@ -34,4 +34,24 @@ class TrackerCategoryViewModel {
         self.fetchCategories()
         updateUI?()
     }
+    
+    func deleteCategory(name: String) {
+            categoryStore.deleteCategory(name: name)
+            fetchCategories()
+            updateUI?()
+        }
+    
+    func editCategory(oldCategory: String, newCategory: String) {
+            if let category = categoryStore.fetchCategory(with: oldCategory) {
+                category.name = newCategory
+                do {
+                    try categoryStore.saveChanges()
+                    fetchCategories() 
+                } catch {
+                    print("Ошибка при сохранении изменений: \(error.localizedDescription)")
+                }
+            } else {
+                print("Категория с именем \(oldCategory) не найдена.")
+            }
+        }
 }

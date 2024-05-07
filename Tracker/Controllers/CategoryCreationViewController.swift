@@ -11,9 +11,9 @@ protocol CategoryCreationDelegate: AnyObject {
     func didCreatCategory(_ category: String)
 }
 
-final class CategoryCreationViewController: UIViewController {
+class CategoryCreationViewController: UIViewController {
     
-    private lazy var titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Новая категория"
         label.textAlignment = .center
@@ -22,7 +22,7 @@ final class CategoryCreationViewController: UIViewController {
         return label
     }()
     
-    private lazy var categoryNameTextField: UITextField = {
+     lazy var categoryNameTextField: UITextField = {
         let textField = UITextField()
         textField.backgroundColor = .yBackground
         textField.layer.cornerRadius = 16
