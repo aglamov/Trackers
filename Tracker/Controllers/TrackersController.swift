@@ -339,6 +339,11 @@ extension TrackersViewController: FilterViewControllerDelegate {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone.current
         let startOfDay = calendar.startOfDay(for: Date())
+        if filter == .allTrackers {
+            filterButton.backgroundColor = .systemBlue
+        } else {
+            filterButton.backgroundColor = .systemRed
+        }
         if filter == .today {
             if let datePicker = datePickerButton.customView as? UIDatePicker {
                 datePicker.setDate(startOfDay, animated: true)
