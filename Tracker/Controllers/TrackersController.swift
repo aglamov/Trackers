@@ -6,11 +6,14 @@
 
 import UIKit
 
+enum FilterType {
+    case all, today, completed, incomplete
+}
+
 final class TrackersViewController: UIViewController, TrackerCellDelegate {
     
     let categoryStore = TrackerCategoryStore()
     let trackerStore = TrackerStore()
-//    let coreDataStore = CoreDataStore()
     var currentDate: Date = Date()
     var presenter: TrackersPresenterProtocol?
     
@@ -64,6 +67,22 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
         return view
     }()
     
+    private lazy var filterButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Фильтры", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemBlue
+        button.layer.cornerRadius = 16
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        button.clipsToBounds = false
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.25
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowRadius = 4
+        return button
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTrackersScreen()
@@ -81,9 +100,11 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
         if presenter?.numberOfSections() == 0 {
             emptyScreenImage.isHidden = false
             emptyScreenText.isHidden = false
+            filterButton.isHidden = true
         } else {
             emptyScreenImage.isHidden = true
             emptyScreenText.isHidden = true
+            filterButton.isHidden = false
         }
     }
     
@@ -110,6 +131,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     private func addSubviews() {
         view.addSubview(emptyScreenView)
         view.addSubview(trackersCollectionView)
+        view.addSubview(filterButton)
     }
     
     private func constraintSubviews() {
@@ -127,7 +149,12 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
             emptyScreenImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             emptyScreenImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emptyScreenText.topAnchor.constraint(equalTo: emptyScreenImage.bottomAnchor, constant: 8),
-            emptyScreenText.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            emptyScreenText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 114)
         ])
     }
     
@@ -188,6 +215,13 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     @objc private func setDateForTrackers(_ sender: UIDatePicker) {
         currentDate = sender.date
         presenter?.setDateForTrackers(for: currentDate)
+    }
+    
+    @objc private func filterButtonTapped() {
+        let filterVC = FilterViewController()
+        filterVC.modalPresentationStyle = .formSheet
+        filterVC.delegate = self
+        present(filterVC, animated: true)
     }
 }
 
@@ -255,7 +289,6 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
         presenter?.updateVisibleTrackerCategories(currentDate)
     }
     
-    
     func trackerCategoryStore(_ trackerCategoryStore: TrackerCategoryStore, didFailWithError error: Error) {
         
     }
@@ -286,21 +319,42 @@ extension TrackersViewController {
         guard let trackerID = cell.id else {
             return
         }
-        
         let trackerStore = TrackerStore()
         guard let tracker = trackerStore.fetchTracker(with: trackerID) else {
             return
         }
-        
-        // Создаем экземпляр контроллера редактирования
         let trackerEditViewController = TrackerEditViewController(tracker: tracker)
-
-        // Оборачиваем его в навигационный контроллер
         let navController = UINavigationController(rootViewController: trackerEditViewController)
         navController.modalPresentationStyle = .fullScreen
-
-        // Представляем модально
         present(navController, animated: true, completion: nil)
 
+    }
+}
+
+//extension TrackersViewController: FilterViewControllerDelegate {
+//    func didSelectCompletedFilter() {
+//    presenter?.filterCompletedTrackers(for: currentDate)
+//        presenter?.updateVisibleTrackerCategories(currentDate)
+//        
+//        trackersCollectionView.reloadData()
+//    }
+//    
+//    func didSelectTodayFilter() {
+//        if let datePicker = datePickerButton.customView as? UIDatePicker {
+//            datePicker.date = Date()
+//            currentDate = Date()
+//            setDateForTrackers(datePicker)
+//        }
+//    }
+//    
+//    func didSelectAllFilter() {
+//        presenter?.updateVisibleTrackerCategories(currentDate)
+//        }
+//    }
+
+extension TrackersViewController: FilterViewControllerDelegate {
+    func didSelectFilter(_ filter: FilterOption) {
+        presenter?.currentFilter = filter
+        presenter?.updateVisibleTrackerCategories(currentDate) // Примените фильтрацию на основе текущего фильтра
     }
 }

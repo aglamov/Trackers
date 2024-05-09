@@ -7,7 +7,12 @@
 
 import UIKit
 
-import UIKit
+enum FilterOption: Int {
+    case allTrackers = 0
+    case today
+    case completed
+    case incomplete
+}
 
 protocol TrackersPresenterProtocol: AnyObject {
     var viewController: TrackersViewController? { get set }
@@ -22,15 +27,18 @@ protocol TrackersPresenterProtocol: AnyObject {
     func categoryName(forSection section: Int) -> String
     func trackerAtIndexPath(_ indexPath: IndexPath) -> TrackersCoreData?
     func updateVisibleTrackerCategories(_ date: Date)
+    func filterCompletedTrackers(for date: Date)
+    var currentFilter: FilterOption { get set }
 }
 
 class TrackersPresenter: TrackersPresenterProtocol {
+    
     weak var viewController: TrackersViewController?
     var visibleTrackerCategories = [TrackersCategoryCoreData]()
     private let trackerStore = TrackerStore()
     private let categoryStore = TrackerCategoryStore()
     private var currentDate = Date()
-    
+    var currentFilter: FilterOption = .allTrackers
     
     func viewDidLoad() {
         updateVisibleTrackerCategories(currentDate)
@@ -48,12 +56,31 @@ class TrackersPresenter: TrackersPresenterProtocol {
     }
     
     func filteredTrackersInCategory(_ category: TrackersCategoryCoreData, for weekday: Int) -> [TrackersCoreData] {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: currentDate)
+        
+        let hasRecordOnDate: (TrackersCoreData, Date) -> Bool = { tracker, date in
+                guard let recordsSet = tracker.trackerRecords as? Set<TrackersRecordCoreData> else { return false }
+                return recordsSet.contains { record in
+                    let recordDate = calendar.startOfDay(for: record.date ?? Date())
+                    return recordDate == startOfDay
+                }
+            }
+        
         guard let trackers = category.trackers as? Set<TrackersCoreData> else { return [] }
         let sortedTrackers = trackers.sorted { $0.name ?? "" < $1.name ?? "" }
         let filteredTrackers = sortedTrackers.filter { tracker in
             if let scheduleData = tracker.schedule,
                let schedule = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData as! Data) as? [Int] {
-                return schedule.contains(weekday) || tracker.typeTracker == 1
+                switch currentFilter {
+                case .allTrackers, .today:
+                    return schedule.contains(weekday) || tracker.typeTracker == 1
+                case .completed:
+                    return (schedule.contains(weekday) || tracker.typeTracker == 1 ) && hasRecordOnDate(tracker, startOfDay)
+                    
+                case .incomplete:
+                    return (schedule.contains(weekday) || tracker.typeTracker == 1 ) && !hasRecordOnDate(tracker, startOfDay)
+                }
             } else {
                 return tracker.typeTracker == 1
             }
@@ -71,19 +98,9 @@ class TrackersPresenter: TrackersPresenterProtocol {
         updateVisibleTrackerCategories(currentDate)
     }
     
-//    func shouldIncludeTracker(_ tracker: TrackersCoreData, weekday: Int) -> Bool {
-//        // Фильтруем по расписанию или типу трекера
-//        if let scheduleData = tracker.schedule,
-//           let schedule = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData as! Data) as? [Int] {
-//            return schedule.contains(weekday) || tracker.typeTracker == 1
-//        } else {
-//            return tracker.typeTracker == 1
-//        }
-//    }
-    
-    func updateVisibleTrackerCategories(_ date: Date) {
-        let weekday = weekdayNumber(for: date)
-        visibleTrackerCategories = categoryStore.fetchCategoriesWithTrackersOnWeekday(weekday)
+    func updateVisibleTrackerCategories(_ currentDate: Date) {
+       
+        visibleTrackerCategories = categoryStore.fetchCategoriesWithTrackersOnWeekday(currentDate)
         viewController?.trackersCollectionView.reloadData()
         viewController?.checkEmptyState()
     }
@@ -104,4 +121,40 @@ class TrackersPresenter: TrackersPresenterProtocol {
         let trackers = filteredTrackersInCategory(category, for: weekday)
         return trackers.count > indexPath.row ? trackers[indexPath.row] : nil
     }
+    
+    func filterCompletedTrackers(for date: Date) {
+        updateVisibleTrackerCategories(date)
+//        let calendar = Calendar.current
+//        let startOfDay = calendar.startOfDay(for: date)
+//
+//        
+//        visibleTrackerCategories.forEach { category in
+//           
+//            guard let trackersSet = category.trackers as? Set<TrackersCoreData> else {
+//                return
+//            }
+//
+//           
+//            let completedTrackers = trackersSet.filter { tracker in
+//                guard let recordsSet = tracker.trackerRecords as? Set<TrackersRecordCoreData> else {
+//                    return false
+//                }
+//
+//                // Проверяем, есть ли запись в день `startOfDay`
+//                return recordsSet.contains { record in
+//                    let recordDate = calendar.startOfDay(for: record.date ?? Date())
+//                    return recordDate == startOfDay
+//                }
+//            }
+//
+//            // Преобразуем обратно в `NSSet` для сохранения типа
+//            category.trackers = NSSet(set: completedTrackers)
+//        }
+//
+//        // Перезагружаем коллекцию и проверяем состояние пустого экрана
+//        viewController?.trackersCollectionView.reloadData()
+//        viewController?.checkEmptyState()
+    }
+
 }
+

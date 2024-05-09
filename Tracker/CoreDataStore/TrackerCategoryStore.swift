@@ -18,6 +18,7 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     private var fetchedResultsController: NSFetchedResultsController<TrackersCategoryCoreData>!
     weak var delegate: TrackerCategoryStoreDelegate?
     private let pinnedCategoryName = "Закрепленные"
+    private var currentFilter: FilterOption = .allTrackers
     
     override init() {
         self.context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -154,39 +155,84 @@ class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         }
     }
     
-    func fetchCategoriesWithTrackersOnWeekday(_ weekday: Int) -> [TrackersCategoryCoreData] {
+    func weekdayNumber(for date: Date) -> Int {
+        let calendar = Calendar.current
+        return calendar.component(.weekday, from: date)
+    }
+    
+    func fetchCategoriesWithTrackersOnWeekday(_ data: Date) -> [TrackersCategoryCoreData] {
         var categoriesWithTrackersOnWeekday = [TrackersCategoryCoreData]()
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: data)
+        let weekday = weekdayNumber(for: data)
+
+        // Кложур для проверки наличия записи на конкретную дату
+        let hasRecordOnDate: (TrackersCoreData, Date) -> Bool = { tracker, date in
+            guard let recordsSet = tracker.trackerRecords as? Set<TrackersRecordCoreData> else { return false }
+            return recordsSet.contains { record in
+                let recordDate = calendar.startOfDay(for: record.date ?? Date())
+                return recordDate == startOfDay
+            }
+        }
+
+        // Запрос на получение всех категорий из Core Data
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()
-        
+
         do {
             let categories = try context.fetch(fetchRequest)
+
+            // Проходимся по каждой категории
             for category in categories {
-                guard let trackers = category.trackers else { continue }
+                guard let trackers = category.trackers as? Set<TrackersCoreData> else { continue }
+
+                // Флаг для добавления категории только один раз
+                var categoryAdded = false
+
+                // Проверяем каждый трекер в категории
                 for tracker in trackers {
-                    guard let tracker = tracker as? TrackersCoreData else { continue }
-                    
-                    if let scheduleData = tracker.schedule as? Data {
-                        do {
-                            if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
-                                
-                                if schedule.contains(weekday) || tracker.typeTracker == 1 {
+                    guard let scheduleData = tracker.schedule as? Data else { continue }
+
+                    // Десериализуем расписание
+                    do {
+                        if let schedule = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(scheduleData) as? [Int] {
+                            switch currentFilter {
+                            case .allTrackers, .today:
+                                if (schedule.contains(weekday) || tracker.typeTracker == 1) && !categoryAdded {
                                     categoriesWithTrackersOnWeekday.append(category)
-                                    break
+                                    categoryAdded = true
+                                }
+                            case .completed:
+                                if (schedule.contains(weekday) || tracker.typeTracker == 1) && hasRecordOnDate(tracker, startOfDay) && !categoryAdded {
+                                    categoriesWithTrackersOnWeekday.append(category)
+                                    categoryAdded = true
+                                }
+                            case .incomplete:
+                                if (schedule.contains(weekday) || tracker.typeTracker == 1) && !hasRecordOnDate(tracker, startOfDay) && !categoryAdded {
+                                    categoriesWithTrackersOnWeekday.append(category)
+                                    categoryAdded = true
                                 }
                             }
-                        } catch {
-                            print("Error deserializing schedule data: \(error.localizedDescription)")
                         }
+                    } catch {
+                        print("Ошибка десериализации данных расписания: \(error.localizedDescription)")
+                    }
+
+                    // Если категория уже добавлена, пропускаем оставшиеся трекеры в этой категории
+                    if categoryAdded {
+                        break
                     }
                 }
             }
         } catch {
-            print("Error fetching categories: \(error.localizedDescription)")
+            print("Ошибка при получении категорий: \(error.localizedDescription)")
         }
+
+        // Сортируем категории по дате создания
         let sortedCategory = categoriesWithTrackersOnWeekday
             .sorted { $0.dataCreation ?? Date() < $1.dataCreation ?? Date() }
         return sortedCategory
     }
+
     
     func getCategories(completion: @escaping ([String]) -> Void) {
         let fetchRequest: NSFetchRequest<TrackersCategoryCoreData> = TrackersCategoryCoreData.fetchRequest()

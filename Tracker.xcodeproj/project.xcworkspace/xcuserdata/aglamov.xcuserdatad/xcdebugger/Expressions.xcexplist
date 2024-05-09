@@ -17,16 +17,33 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "TrackerCategoryStore.fetchCategoriesWithTrackersOnWeekday(_:):TrackerCategoryStore.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "category.name">
+            </PersistentString>
+            <PersistentString
+               value = "sortedCategory">
+            </PersistentString>
+            <PersistentString
+               value = "categoriesWithTrackersOnWeekday">
+            </PersistentString>
+            <PersistentString
+               value = "currentFilter">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "TrackerCreation2ViewController.updateSaveButtonAvailability(): TrackerCreation2Controller.swift">
          <PersistentStrings>
             <PersistentString
-               value = "isCategorySelected">
+               value = "isScheduleSelected">
             </PersistentString>
             <PersistentString
                value = "trackerNameTextField.text?.isEmpty">
             </PersistentString>
             <PersistentString
-               value = "isScheduleSelected">
+               value = "isCategorySelected">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -95,6 +112,14 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "TrackerSchedule.tableView(_:cellForRowAt:):TrackerSchedule.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "selectedWeekdays">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "GLOBAL">
          <PersistentStrings>
             <PersistentString
@@ -111,14 +136,6 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "TrackerSchedule.tableView(_:cellForRowAt:):TrackerSchedule.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "selectedWeekdays">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "TrackersViewController.collectionView(_:cellForItemAt:):TrackersController.swift">
          <PersistentStrings>
             <PersistentString
@@ -126,14 +143,6 @@
             </PersistentString>
             <PersistentString
                value = "tracker.name">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "TrackersViewController.trackers.setter:TrackersController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "trackers">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -148,6 +157,14 @@
             </PersistentString>
             <PersistentString
                value = "schedule">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackersViewController.trackers.setter:TrackersController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "trackers">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -345,6 +362,17 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "TrackersPresenter.filteredTrackersInCategory(_:for:):TrackersPresenter.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "category.name">
+            </PersistentString>
+            <PersistentString
+               value = "currentDate">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "TrackersViewController.collectionView(_:layout:sizeForItemAt:):TrackersController.swift">
          <PersistentStrings>
             <PersistentString
@@ -381,22 +409,22 @@
                value = "trackerToEdit">
             </PersistentString>
             <PersistentString
-               value = "color">
+               value = "trackerToEdit.color">
             </PersistentString>
             <PersistentString
                value = "selectedEmojiIndexPath">
-            </PersistentString>
-            <PersistentString
-               value = "$0.ciColor">
-            </PersistentString>
-            <PersistentString
-               value = "trackerToEdit.color">
             </PersistentString>
             <PersistentString
                value = "colors.firstIndex(where: { $0 == color }) ">
             </PersistentString>
             <PersistentString
                value = "colorName.name">
+            </PersistentString>
+            <PersistentString
+               value = "$0.ciColor">
+            </PersistentString>
+            <PersistentString
+               value = "color">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
