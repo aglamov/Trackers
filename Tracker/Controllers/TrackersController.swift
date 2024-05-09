@@ -12,7 +12,7 @@ enum FilterType {
 
 final class TrackersViewController: UIViewController, TrackerCellDelegate {
     
-    let categoryStore = TrackerCategoryStore()
+    let categoryStore = TrackerCategoryStore.shared
     let trackerStore = TrackerStore()
     var currentDate: Date = Date()
     var presenter: TrackersPresenterProtocol?

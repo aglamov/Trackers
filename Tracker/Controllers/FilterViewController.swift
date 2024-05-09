@@ -85,6 +85,8 @@ class FilterViewController: UIViewController {
     }
     
     @objc private func applyFilter() {
+        let trackerCategoryStore = TrackerCategoryStore.shared
+        trackerCategoryStore.updateFilter(to: selectedFilter)
         delegate?.didSelectFilter(selectedFilter)
         dismiss(animated: true)
     }

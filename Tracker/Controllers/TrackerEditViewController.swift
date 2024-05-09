@@ -91,7 +91,7 @@ class TrackerEditViewController: TrackerCreationExtendedViewController {
             print("Ошибка при сохранении расписания: \(error)")
         }
     
-        let categoryStore = TrackerCategoryStore()
+        let categoryStore = TrackerCategoryStore.shared
 
         if let existingCategory = categoryStore.fetchCategory(with: selectedCategory) {
             existingCategory.addToTrackers(trackerToEdit)

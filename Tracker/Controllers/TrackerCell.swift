@@ -171,7 +171,7 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
     
     private func pinMenuItemTapped(for cell: TrackerCell) {
         let trackerStore = TrackerStore()
-        let categoryStore = TrackerCategoryStore()
+        let categoryStore = TrackerCategoryStore.shared
         
         guard let trackerID = cell.id else {
             return
@@ -196,7 +196,7 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
     }
         
     private func unpinMenuItemTapped(for cell: TrackerCell) {
-        let categoryStore = TrackerCategoryStore()
+        let categoryStore = TrackerCategoryStore.shared
         let trackerStore = TrackerStore()
         
         guard let trackerID = cell.id else {

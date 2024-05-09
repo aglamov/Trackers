@@ -23,9 +23,6 @@
                value = "category.name">
             </PersistentString>
             <PersistentString
-               value = "sortedCategory">
-            </PersistentString>
-            <PersistentString
                value = "categoriesWithTrackersOnWeekday">
             </PersistentString>
             <PersistentString
@@ -264,6 +261,17 @@
       </ContextState>
       <ContextState
          contextName = "TrackerManager.shared.unsafeMutableAddressor:TrackerManager.swift">
+      </ContextState>
+      <ContextState
+         contextName = "TrackerCategoryStore.updateFilter(to:):TrackerCategoryStore.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "FilterOption">
+            </PersistentString>
+            <PersistentString
+               value = "currentFilter">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "TrackerRecordStore.fetchRecords(forTrackerID:date:):TrackerRecordStore.swift">

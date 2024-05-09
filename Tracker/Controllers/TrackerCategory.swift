@@ -92,7 +92,7 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
     }
     
     private func setupViewModel() {
-        viewModel = TrackerCategoryViewModel(categoryStore: TrackerCategoryStore())
+        viewModel = TrackerCategoryViewModel(categoryStore: TrackerCategoryStore.shared)
         viewModel.updateUI = { [weak self] in
             self?.setupTableView.reloadData()
         }

@@ -319,7 +319,7 @@ class TrackerCreationExtendedViewController: UIViewController  {
         
         let tracker = trackerStore.fetchTracker(with: id)!
         
-        let categoryStore = TrackerCategoryStore()
+        let categoryStore = TrackerCategoryStore.shared
         categoryStore.createCategory(name: selectedCategory, tracker: tracker)
         
         let tabBarController = TabBarController.shared
