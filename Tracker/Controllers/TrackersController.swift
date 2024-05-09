@@ -220,6 +220,8 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     @objc private func filterButtonTapped() {
         let filterVC = FilterViewController()
         filterVC.modalPresentationStyle = .formSheet
+        let selectedFilter = presenter?.currentFilter
+        filterVC.selectedFilter = selectedFilter ?? .allTrackers
         filterVC.delegate = self
         present(filterVC, animated: true)
     }
@@ -331,30 +333,19 @@ extension TrackersViewController {
     }
 }
 
-//extension TrackersViewController: FilterViewControllerDelegate {
-//    func didSelectCompletedFilter() {
-//    presenter?.filterCompletedTrackers(for: currentDate)
-//        presenter?.updateVisibleTrackerCategories(currentDate)
-//        
-//        trackersCollectionView.reloadData()
-//    }
-//    
-//    func didSelectTodayFilter() {
-//        if let datePicker = datePickerButton.customView as? UIDatePicker {
-//            datePicker.date = Date()
-//            currentDate = Date()
-//            setDateForTrackers(datePicker)
-//        }
-//    }
-//    
-//    func didSelectAllFilter() {
-//        presenter?.updateVisibleTrackerCategories(currentDate)
-//        }
-//    }
-
 extension TrackersViewController: FilterViewControllerDelegate {
     func didSelectFilter(_ filter: FilterOption) {
         presenter?.currentFilter = filter
-        presenter?.updateVisibleTrackerCategories(currentDate) // Примените фильтрацию на основе текущего фильтра
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone.current
+        let startOfDay = calendar.startOfDay(for: Date())
+        if filter == .today {
+            if let datePicker = datePickerButton.customView as? UIDatePicker {
+                datePicker.setDate(startOfDay, animated: true)
+            }
+            presenter?.setDateForTrackers(for: Date())
+        } else {
+            presenter?.updateVisibleTrackerCategories(currentDate)
+        }
     }
 }
