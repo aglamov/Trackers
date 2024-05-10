@@ -25,7 +25,7 @@ class TabBarController: UITabBarController {
         let trackers = TrackersViewController()
         let statistics = StatisticsViewController()
         
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
         
         trackers.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "Trackers"), tag: 0)
         statistics.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "Statistics"), tag: 1)

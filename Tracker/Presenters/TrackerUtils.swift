@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum FilterOption: Int {
     case allTrackers = 0
@@ -38,6 +39,18 @@ func filterTrackers(_ trackers: Set<TrackersCoreData>, for weekday: Int, on date
             }
         } else {
             return tracker.typeTracker == 1
+        }
+    }
+}
+
+extension UIColor {
+    static var invertedSystemBackground: UIColor {
+        return UIColor { (traitCollection: UITraitCollection) -> UIColor in
+            if traitCollection.userInterfaceStyle == .dark {
+                return .white
+            } else {
+                return .black
+            }
         }
     }
 }

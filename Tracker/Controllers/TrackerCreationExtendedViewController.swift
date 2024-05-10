@@ -62,7 +62,7 @@ class TrackerCreationExtendedViewController: UIViewController  {
         let button = UIButton()
         button.setTitle("Отменить", for: .normal)
         button.setTitleColor(.yRed, for: .normal)
-        button.backgroundColor = .white
+        button.backgroundColor = UIColor.systemBackground
         button.layer.cornerRadius = 16
         button.layer.borderWidth = 2
         button.layer.borderColor = UIColor.yRed.cgColor
@@ -89,7 +89,7 @@ class TrackerCreationExtendedViewController: UIViewController  {
         planningTableView.translatesAutoresizingMaskIntoConstraints = false
         planningTableView.separatorStyle = .singleLine
         planningTableView.contentInsetAdjustmentBehavior = .never
-        planningTableView.backgroundColor = .white
+        planningTableView.backgroundColor = UIColor.systemBackground
         planningTableView.isScrollEnabled = true
         planningTableView.showsVerticalScrollIndicator = false
         planningTableView.dataSource = self
@@ -177,7 +177,7 @@ class TrackerCreationExtendedViewController: UIViewController  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         view.addSubview(titleLabel)
@@ -236,7 +236,7 @@ class TrackerCreationExtendedViewController: UIViewController  {
         setupTableView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         setupTableView.leadingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
         setupTableView.trailingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
-        setupTableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight()+35).isActive = true
+        setupTableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight()+38).isActive = true
         
         contentView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true

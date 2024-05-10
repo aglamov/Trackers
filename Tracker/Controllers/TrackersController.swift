@@ -16,6 +16,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     let trackerStore = TrackerStore()
     var currentDate: Date = Date()
     var presenter: TrackersPresenterProtocol?
+   // private let colors = Colors()
     
     lazy var trackersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -109,7 +110,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     }
     
     private func setupTrackersScreen() {
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
         setupNavigationBar()
         addSubviews()
         constraintSubviews()
@@ -118,12 +119,13 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     private func setupNavigationBar() {
         guard let navigationBar = navigationController?.navigationBar else { return }
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        addButton.tintColor = .black
+        addButton.tintColor = .invertedSystemBackground
         navigationBar.topItem?.setLeftBarButton(addButton, animated: true)
         navigationBar.topItem?.title = "Трекеры"
         navigationBar.prefersLargeTitles = true
         navigationBar.topItem?.largeTitleDisplayMode = .always
         navigationBar.barTintColor = .white
+        navigationBar.backgroundColor = UIColor.systemBackground
         navigationBar.isTranslucent = false
         navigationItem.rightBarButtonItem = datePickerButton
     }
@@ -354,3 +356,5 @@ extension TrackersViewController: FilterViewControllerDelegate {
         }
     }
 }
+
+

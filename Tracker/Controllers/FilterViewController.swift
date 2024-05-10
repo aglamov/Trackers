@@ -23,7 +23,7 @@ class FilterViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .singleLine
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = UIColor.systemBackground
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
         tableView.dataSource = self
@@ -47,6 +47,7 @@ class FilterViewController: UIViewController {
         let label = UILabel()
         label.text = "Фильтры"
         label.textAlignment = .center
+        label.textColor = .invertedSystemBackground
         label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -54,7 +55,7 @@ class FilterViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
         setupSubviews()
         setupConstraints()
     }

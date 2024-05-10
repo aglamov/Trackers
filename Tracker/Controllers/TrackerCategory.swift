@@ -26,7 +26,7 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .singleLine
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = UIColor.systemBackground
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
         tableView.dataSource = self
@@ -38,8 +38,8 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
     private lazy var saveButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
+        button.setTitleColor(UIColor.systemBackground, for: .normal)
+        button.backgroundColor = .invertedSystemBackground
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -57,7 +57,7 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
         
         view.addSubview(titleLabel)
         view.addSubview(setupTableView)

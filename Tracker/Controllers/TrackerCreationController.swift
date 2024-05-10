@@ -13,7 +13,7 @@ class TrackerCreationViewController: UIViewController {
     let eventButton = UIButton()
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
 
         titleLabel.text = "Создание трекера"
         titleLabel.textAlignment = .center
@@ -22,8 +22,8 @@ class TrackerCreationViewController: UIViewController {
         view.addSubview(titleLabel)
         
         habitButton.setTitle("Привычка", for: .normal)
-        habitButton.backgroundColor = .black
-        habitButton.setTitleColor(.white, for: .normal)
+        habitButton.backgroundColor = .invertedSystemBackground
+        habitButton.setTitleColor(UIColor.systemBackground, for: .normal)
         habitButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
 
         habitButton.translatesAutoresizingMaskIntoConstraints = false
@@ -32,8 +32,8 @@ class TrackerCreationViewController: UIViewController {
         view.addSubview(habitButton)
         
         eventButton.setTitle("Нерегулярное событие", for: .normal)
-        eventButton.backgroundColor = .black
-        eventButton.setTitleColor(.white, for: .normal)
+        eventButton.backgroundColor = .invertedSystemBackground
+        eventButton.setTitleColor(UIColor.systemBackground, for: .normal)
         eventButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         eventButton.translatesAutoresizingMaskIntoConstraints = false
         eventButton.layer.cornerRadius = 16

@@ -53,7 +53,7 @@ class TrackerCell: UICollectionViewCell {
     let countLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
+        label.textColor = .invertedSystemBackground
         label.textAlignment = .left
         label.text = "0 дней"
         return label
@@ -64,7 +64,7 @@ class TrackerCell: UICollectionViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 0.5 * button.bounds.size.width
         button.clipsToBounds = true
-        button.backgroundColor = .white
+        button.backgroundColor = UIColor.systemBackground
         let configuration = UIImage.SymbolConfiguration(pointSize: 24)
         let checkmarkImage = UIImage(systemName: "checkmark.circle.fill", withConfiguration: configuration)
         let preCheckmarkImage = UIImage(systemName: "plus.circle.fill", withConfiguration: configuration)

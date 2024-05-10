@@ -17,6 +17,7 @@ class CategoryCreationViewController: UIViewController {
         let label = UILabel()
         label.text = "Новая категория"
         label.textAlignment = .center
+        label.textColor = .invertedSystemBackground
         label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -37,8 +38,8 @@ class CategoryCreationViewController: UIViewController {
     private lazy var saveButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
+        button.setTitleColor(UIColor.systemBackground, for: .normal)
+        button.backgroundColor = .invertedSystemBackground
         button.layer.cornerRadius = 16
         
         button.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
@@ -50,7 +51,7 @@ class CategoryCreationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
         view.addSubview(titleLabel)
         view.addSubview(categoryNameTextField)
         view.addSubview(saveButton)
@@ -83,9 +84,11 @@ class CategoryCreationViewController: UIViewController {
         
         if isNameValid {
             saveButton.isEnabled = true
-            saveButton.backgroundColor = .black
+            saveButton.tintColor = UIColor.systemBackground
+            saveButton.backgroundColor = .invertedSystemBackground
         } else {
             saveButton.isEnabled = false
+            saveButton.tintColor = .invertedSystemBackground
             saveButton.backgroundColor = .yGray
         }
     }

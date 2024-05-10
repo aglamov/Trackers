@@ -68,7 +68,7 @@ final class TrackerSchedule: UIViewController, UITableViewDataSource, UITableVie
         planningTableView.translatesAutoresizingMaskIntoConstraints = false
         planningTableView.separatorStyle = .singleLine
         planningTableView.contentInsetAdjustmentBehavior = .never
-        planningTableView.backgroundColor = .white
+        planningTableView.backgroundColor = UIColor.systemBackground
         planningTableView.isScrollEnabled = true
         planningTableView.showsVerticalScrollIndicator = false
         planningTableView.dataSource = self
@@ -85,8 +85,8 @@ final class TrackerSchedule: UIViewController, UITableViewDataSource, UITableVie
     private lazy var saveButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
+        button.setTitleColor(UIColor.systemBackground, for: .normal)
+        button.backgroundColor = .invertedSystemBackground
         button.layer.cornerRadius = 16
         
         button.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
@@ -96,7 +96,7 @@ final class TrackerSchedule: UIViewController, UITableViewDataSource, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
         view.addSubview(titleLabel)
         view.addSubview(setupTableView)
         view.addSubview(saveButton)
