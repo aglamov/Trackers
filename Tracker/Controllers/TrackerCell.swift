@@ -18,6 +18,7 @@ class TrackerCell: UICollectionViewCell {
     weak var presenter: TrackersPresenterProtocol?
     var id: UUID?
     var currentDate: Date?
+    let analytics = AnalyticsService()
     
     let containerView: UIView = {
         let view = UIView()
@@ -214,11 +215,13 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
     }
     
     private func editMenuItemTapped() {
+        analytics.reportButtonClick(screen: "Main", item: "edit")
         delegate?.editMenuItemTapped(for: self)
     }
     
     private func deleteMenuItemTapped(for cell: TrackerCell) {
         guard let trackerID = self.id else { return }
+        analytics.reportButtonClick(screen: "Main", item: "delete")
         presenter?.removeButtonTapped(trackerID: trackerID)
     }
 }

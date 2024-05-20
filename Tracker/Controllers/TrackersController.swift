@@ -16,7 +16,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     let trackerStore = TrackerStore()
     var currentDate: Date = Date()
     var presenter: TrackersPresenterProtocol?
-   // private let colors = Colors()
+    let analytics = AnalyticsService()
     
     lazy var trackersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -95,7 +95,14 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
         presenter?.viewController = self
         presenter?.viewDidLoad()
         checkEmptyState()
+        analytics.reportScreenOpen(screen: "Main")
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+            super.viewDidDisappear(animated)
+            // Регистрация события закрытия экрана
+            analytics.reportScreenClose(screen: "Main")
+        }
     
     func checkEmptyState() {
         if presenter?.numberOfSections() == 0 {
@@ -189,6 +196,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
             trackerRecordStore.removeRecord(trackerID: trackerID, date: currentDate)
             cell.addButton.isSelected = false
         }
+        analytics.reportButtonClick(screen: "Main", item: "track")
         trackersCollectionView.reloadData()
     }
     
@@ -211,6 +219,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     @objc private func addButtonTapped() {
         let trackerCreation = TrackerCreationViewController()
         let navController = UINavigationController(rootViewController: trackerCreation)
+        analytics.reportButtonClick(screen: "Main", item: "add_track")
         navigationController?.present(navController, animated: true, completion: nil)
     }
     
@@ -225,6 +234,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
         let selectedFilter = presenter?.currentFilter
         filterVC.selectedFilter = selectedFilter ?? .allTrackers
         filterVC.delegate = self
+        analytics.reportButtonClick(screen: "Main", item: "filter")
         present(filterVC, animated: true)
     }
 }
