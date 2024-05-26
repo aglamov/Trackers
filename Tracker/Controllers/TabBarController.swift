@@ -15,6 +15,9 @@ class TabBarController: UITabBarController {
         configureTabBarController()
     }
 
+    let trackersTitle = NSLocalizedString("trackers_title", comment: "Title for the trackers screen")
+    let statisticsTitle = NSLocalizedString("statistics_title", comment: "Title for the statistics screen")
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -27,8 +30,8 @@ class TabBarController: UITabBarController {
         
         view.backgroundColor = UIColor.systemBackground
         
-        trackers.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "Trackers"), tag: 0)
-        statistics.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "Statistics"), tag: 1)
+        trackers.tabBarItem = UITabBarItem(title: trackersTitle, image: UIImage(named: "Trackers"), tag: 0)
+        statistics.tabBarItem = UITabBarItem(title: statisticsTitle, image: UIImage(named: "Statistics"), tag: 1)
         
         let trackersNav = UINavigationController(rootViewController: trackers)
         let statisticsNav = UINavigationController(rootViewController: statistics)

@@ -19,6 +19,9 @@ class TrackerCell: UICollectionViewCell {
     var id: UUID?
     var currentDate: Date?
     let analytics = AnalyticsService()
+    private let daysTitle: String = NSLocalizedString("days_title", comment: "Title for the days")
+    private var localizedTitle: String!
+
     
     let containerView: UIView = {
         let view = UIView()
@@ -56,7 +59,7 @@ class TrackerCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .invertedSystemBackground
         label.textAlignment = .left
-        label.text = "0 дней"
+       // label.text = "0 \(daysTitle)"
         return label
     }()
     
@@ -81,6 +84,7 @@ class TrackerCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.addSubview(containerView)
         containerView.addSubview(titleLabel)
+       // countLabel.text = "0 \(daysTitle)"
         contentView.addSubview(countLabel)
         contentView.addSubview(addButton)
         containerView.addSubview(containerEmoji)

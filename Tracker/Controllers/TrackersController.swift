@@ -17,6 +17,9 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     var currentDate: Date = Date()
     var presenter: TrackersPresenterProtocol?
     let analytics = AnalyticsService()
+    let trackersTitle = NSLocalizedString("trackers_title", comment: "Title for the trackers screen")
+    let filterstitle = NSLocalizedString("filters_title", comment: "filters title")
+    let emptyState = NSLocalizedString("emptyState.title", comment: "Title for empty screen")
     
     lazy var trackersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -55,7 +58,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     private lazy var emptyScreenText: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Что будем отслеживать?"
+        label.text = emptyState
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         return label
     }()
@@ -70,7 +73,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     
     private lazy var filterButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Фильтры", for: .normal)
+        button.setTitle(filterstitle, for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .systemBlue
         button.layer.cornerRadius = 16
@@ -128,7 +131,7 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
         addButton.tintColor = .invertedSystemBackground
         navigationBar.topItem?.setLeftBarButton(addButton, animated: true)
-        navigationBar.topItem?.title = "Трекеры"
+        navigationBar.topItem?.title = trackersTitle
         navigationBar.prefersLargeTitles = true
         navigationBar.topItem?.largeTitleDisplayMode = .always
         navigationBar.barTintColor = .white
@@ -202,12 +205,16 @@ final class TrackersViewController: UIViewController, TrackerCellDelegate {
     
     
     func dayString(for days: Int) -> String {
+        let oneDay = NSLocalizedString("one_day", comment: "Singular form of day")
+        let fewDays = NSLocalizedString("few_days", comment: "Few days form (2-4)")
+        let manyDays = NSLocalizedString("many_days", comment: "Many days form (0, 5-20)")
+        
         if days % 10 == 1 && days % 100 != 11 {
-            return "день"
+            return oneDay
         } else if days % 10 >= 2 && days % 10 <= 4 && (days % 100 < 10 || days % 100 >= 20) {
-            return "дня"
+            return fewDays
         } else {
-            return "дней"
+            return manyDays
         }
     }
     

@@ -14,8 +14,8 @@
             filePath = "Tracker/Controllers/TrackersController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "199"
-            endingLineNumber = "199"
+            startingLineNumber = "202"
+            endingLineNumber = "202"
             landmarkName = "doneButtonTapped(in:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,40 +30,10 @@
             filePath = "Tracker/Controllers/StatisticsController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "fetchAndDisplayStatistics()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "F5B1974D-5E5B-4DC0-B4AC-B8952C3D0D24 - fb3836ae64c16c29"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tracker.StatisticsViewController.fetchAndDisplayStatistics() -&gt; ()"
-                  moduleName = "Tracker"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aglamov/Projects/Tracker/Tracker/Controllers/StatisticsController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "111"
-                  endingLineNumber = "111">
-               </Location>
-               <Location
-                  uuid = "F5B1974D-5E5B-4DC0-B4AC-B8952C3D0D24 - fb3836ae64c16c48"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tracker.StatisticsViewController.fetchAndDisplayStatistics() -&gt; ()"
-                  moduleName = "Tracker"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aglamov/Projects/Tracker/Tracker/Controllers/StatisticsController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "110"
-                  endingLineNumber = "110">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

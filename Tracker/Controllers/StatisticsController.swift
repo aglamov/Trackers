@@ -5,6 +5,8 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     private var statistics: [(title: String, value: String)] = []
     private var trackerRecordStore: TrackerRecordStore!
     private var isEmpty: Bool = true
+    let statisticsTitle = NSLocalizedString("statistics_title", comment: "Title for the statistics screen")
+    let noDataMessage = NSLocalizedString("no_data_message", comment: "Message shown when there is no data to analyze")
     
     private lazy var emptyScreenImage: UIImageView = {
         let imageView = UIImageView()
@@ -16,7 +18,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     private lazy var emptyScreenText: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Анализировать пока нечего?"
+        label.text = noDataMessage
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         return label
     }()
@@ -31,7 +33,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Статистика"
+        label.text = statisticsTitle
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         label.sizeToFit()
         return label

@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Рамиль Аглямов on 26.05.2024.
+  
+*/
+"statistics_title" = "Statistics";
+"no_data_message" = "Nothing to analyze yet?";
+"emptyState.title" = "Что будем отслеживать?";
+"trackers_title" = "Trackers";
+"filters_title" = "Filters";
+"one_day" = "day";
+"few_days" = "days";
+"many_days" = "days";
