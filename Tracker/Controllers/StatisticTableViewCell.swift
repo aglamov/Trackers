@@ -1,143 +1,85 @@
 import UIKit
 
-struct Statistic {
-    let title: String
-    let value: Int
-}
-
-
-
-class StatisticsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class StatisticTableViewCell: UITableViewCell {
     
-    // MARK: - Properties
-    
-    private var statistics: [Statistic] = [
-        Statistic(title: "Лучший период", value: 6),
-        Statistic(title: "Идеальные дни", value: 2),
-        Statistic(title: "Трекеров завершено", value: 5),
-        Statistic(title: "Среднее значение", value: 4)
-    ]
-    
-    // MARK: - UI Elements
-    
-    private lazy var emptyScreenImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "EmptyStatistics")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    private lazy var emptyScreenText: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Анализировать пока нечего?"
-        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        return label
-    }()
-    
-    private lazy var emptyScreenView: UIView = {
+    private let containerView: UIView = {
         let view = UIView()
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(emptyScreenImage)
-        view.addSubview(emptyScreenText)
         return view
     }()
     
-    private lazy var titleLabel: UILabel = {
+    private let borderLayer: CAGradientLayer = {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [UIColor.red.cgColor, UIColor.blue.cgColor, UIColor.green.cgColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        return gradientLayer
+    }()
+    
+    private let valueLabel: UILabel = {
         let label = UILabel()
-        label.text = "Статистика"
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.sizeToFit()
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.separatorStyle = .none
-        tableView.register(StatisticTableViewCell.self, forCellReuseIdentifier: "StatisticCell")
-        return tableView
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
-    // MARK: - Lifecycle Methods
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupStatisticsScreen()
-        checkEmptyState()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupCell()
     }
     
-    // MARK: - Setup Methods
-    
-    private func setupStatisticsScreen() {
-        view.backgroundColor = UIColor.systemBackground
-        setupNavigationBar()
-        addSubviews()
-        constraintSubviews()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupNavigationBar() {
-        let titleBarButton = UIBarButtonItem(customView: titleLabel)
-        navigationItem.leftBarButtonItem = titleBarButton
-    }
-    
-    private func addSubviews() {
-        view.addSubview(emptyScreenView)
-        view.addSubview(tableView)
-    }
-    
-    private func constraintSubviews() {
+    private func setupCell() {
+        contentView.addSubview(containerView)
+        containerView.addSubview(valueLabel)
+        containerView.addSubview(titleLabel)
+        
         NSLayoutConstraint.activate([
-            emptyScreenView.topAnchor.constraint(equalTo: view.topAnchor),
-            emptyScreenView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            emptyScreenView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emptyScreenView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            emptyScreenImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            emptyScreenImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyScreenText.topAnchor.constraint(equalTo: emptyScreenImage.bottomAnchor, constant: 8),
-            emptyScreenText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            valueLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+            valueLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
             
-            tableView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            tableView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            titleLabel.topAnchor.constraint(equalTo: valueLabel.bottomAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
+            titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
         ])
+        
+        containerView.layer.insertSublayer(borderLayer, at: 0)
+        containerView.backgroundColor = .systemBackground
     }
     
-    // MARK: - Helper Methods
-    
-    private func checkEmptyState() {
-        let isEmpty = statistics.isEmpty
-        emptyScreenImage.isHidden = !isEmpty
-        emptyScreenText.isHidden = !isEmpty
-        tableView.isHidden = isEmpty
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        borderLayer.frame = containerView.bounds
+        let borderMaskLayer = CAShapeLayer()
+        borderMaskLayer.path = UIBezierPath(roundedRect: containerView.bounds, cornerRadius: containerView.layer.cornerRadius).cgPath
+        borderMaskLayer.fillColor = UIColor.clear.cgColor
+        borderMaskLayer.strokeColor = UIColor.black.cgColor
+        borderMaskLayer.lineWidth = 2
+        borderMaskLayer.frame = containerView.bounds
+        borderLayer.mask = borderMaskLayer
     }
     
-    // MARK: - UITableViewDataSource
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return statistics.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "StatisticCell", for: indexPath) as? StatisticTableViewCell else {
-            return UITableViewCell()
-        }
-        let statistic = statistics[indexPath.row]
-        cell.configure(with: statistic)
-        return cell
-    }
-    
-    // MARK: - UITableViewDelegate
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100 // 80 for cell height and 20 for spacing (10+10)
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    func configure(with statistic: (title: String, value: String)) {
+        titleLabel.text = statistic.title
+        valueLabel.text = statistic.value
     }
 }
