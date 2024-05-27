@@ -198,4 +198,53 @@ class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
         }
     }
 
+    func computeStatistics() -> (bestPeriod: Int, perfectDays: Int, trackersCompleted: Int, averageValue: Float) {
+            let records = fetchAllRecords()
+            
+            // Сортируем записи по дате
+            let sortedRecords = records.sorted(by: { $0.date ?? Date() < $1.date ?? Date() })
+            
+            var bestPeriod = 0
+            var perfectDays = 0
+            var trackersCompleted = 0
+            var totalDays = 0
+            
+            var currentStreak = 0
+            var previousDate: Date?
+            var dailyTrackerCount = [Date: Int]()
+            
+            for record in sortedRecords {
+                if let date = record.date {
+                    // Проверка на непрерывный период
+                    if let previousDate = previousDate, Calendar.current.isDate(date, inSameDayAs: previousDate.addingTimeInterval(86400)) {
+                        currentStreak += 1
+                    } else {
+                        currentStreak = 1
+                    }
+                    bestPeriod = max(bestPeriod, currentStreak)
+                    
+                    // Учет выполнения трекера
+                    trackersCompleted += 1
+                    
+                    // Учет трекеров в день
+                    if let count = dailyTrackerCount[date] {
+                        dailyTrackerCount[date] = count + 1
+                    } else {
+                        dailyTrackerCount[date] = 1
+                        totalDays += 1
+                    }
+                }
+                previousDate = record.date
+            }
+            
+            // Подсчет идеальных дней (если в идеальный день выполняется 5 трекеров)
+            let idealTrackerCountPerDay = 5
+            perfectDays = dailyTrackerCount.values.filter { $0 >= idealTrackerCountPerDay }.count
+            
+            // Подсчет среднего значения
+            let averageValue = totalDays > 0 ? Float(trackersCompleted) / Float(totalDays) : 0
+            
+            return (bestPeriod, perfectDays, trackersCompleted, averageValue)
+        }
+
 }

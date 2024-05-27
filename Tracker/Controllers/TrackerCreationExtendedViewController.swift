@@ -7,7 +7,7 @@
 import Foundation
 import UIKit
 
-final class TrackerCreationExtendedViewController: UIViewController  {
+class TrackerCreationExtendedViewController: UIViewController  {
     
     var selectedType: TrackerType
     var selectedCategory: String = ""
@@ -37,7 +37,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return view
     }()
     
-    private lazy var titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Новая привычка"
         label.textAlignment = .center
@@ -46,7 +46,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return label
     }()
     
-    private lazy var trackerNameTextField: UITextField = {
+    lazy var trackerNameTextField: UITextField = {
         let textField = UITextField()
         textField.backgroundColor = .yBackground
         textField.layer.cornerRadius = 16
@@ -62,7 +62,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         let button = UIButton()
         button.setTitle("Отменить", for: .normal)
         button.setTitleColor(.yRed, for: .normal)
-        button.backgroundColor = .white
+        button.backgroundColor = UIColor.systemBackground
         button.layer.cornerRadius = 16
         button.layer.borderWidth = 2
         button.layer.borderColor = UIColor.yRed.cgColor
@@ -72,7 +72,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return button
     }()
     
-    private lazy var saveButton: UIButton = {
+    lazy var saveButton: UIButton = {
         let button = UIButton()
         button.setTitle("Создать", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -84,12 +84,12 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return button
     }()
     
-    private lazy var setupTableView: UITableView = {
+    lazy var setupTableView: UITableView = {
         let planningTableView = UITableView(frame: .zero, style: .insetGrouped)
         planningTableView.translatesAutoresizingMaskIntoConstraints = false
         planningTableView.separatorStyle = .singleLine
         planningTableView.contentInsetAdjustmentBehavior = .never
-        planningTableView.backgroundColor = .white
+        planningTableView.backgroundColor = UIColor.systemBackground
         planningTableView.isScrollEnabled = true
         planningTableView.showsVerticalScrollIndicator = false
         planningTableView.dataSource = self
@@ -108,7 +108,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return label
     }()
     
-    private lazy var emojiCollectionView: UICollectionView = {
+    lazy var emojiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 10
@@ -133,7 +133,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         return label
     }()
     
-    private lazy var colorCollectionView: UICollectionView = {
+    lazy var colorCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 10
@@ -177,7 +177,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         view.addSubview(titleLabel)
@@ -236,7 +236,7 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         setupTableView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         setupTableView.leadingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
         setupTableView.trailingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
-        setupTableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight()+35).isActive = true
+        setupTableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight()+38).isActive = true
         
         contentView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
@@ -278,27 +278,34 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         
     }
     
-    @objc private func scheduleButtonTapped() {
-        let trackerCreation = TrackerSchedule()
-        trackerCreation.delegate = self
-        let navController = UINavigationController(rootViewController: trackerCreation)
+    @objc func scheduleButtonTapped() {
+        let trackerSchedule = TrackerSchedule()
+        trackerSchedule.delegate = self
+        trackerSchedule.selectedWeekdays = selectedIndexes.map { index in
+            if let weekday = trackerSchedule.weekdays.first(where: { $0.2 == index }) {
+                return (weekday.1, index)
+            }
+            return ("", index)
+        }
+        let navController = UINavigationController(rootViewController: trackerSchedule)
         navController.modalPresentationStyle = .fullScreen
         navigationController?.present(navController, animated: true, completion: nil)
     }
     
-    @objc private func categoryButtonTapped() {
-        let trackerCreation = TrackerCategoryViewController()
-        trackerCreation.delegate = self
-        let navController = UINavigationController(rootViewController: trackerCreation)
+    @objc func categoryButtonTapped() {
+        let trackerCategory = TrackerCategoryViewController()
+        trackerCategory.delegate = self
+        trackerCategory.selectedCategory = selectedCategory
+        let navController = UINavigationController(rootViewController: trackerCategory)
         navController.modalPresentationStyle = .fullScreen
         navigationController?.present(navController, animated: true, completion: nil)
     }
     
-    @objc private func cancelButtonTapped() {
+    @objc  func cancelButtonTapped() {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc private func saveButtonTapped() {
+    @objc  func saveButtonTapped() {
         let id = UUID()
         let name = trackerNameTextField.text ?? ""
         let color = colors[selectedColorIndexPath!.item]
@@ -311,8 +318,8 @@ final class TrackerCreationExtendedViewController: UIViewController  {
         trackerStore.createTracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, isPinned: isPinned, typeTracker: typeTracker)
         
         let tracker = trackerStore.fetchTracker(with: id)!
-
-        let categoryStore = TrackerCategoryStore()
+        
+        let categoryStore = TrackerCategoryStore.shared
         categoryStore.createCategory(name: selectedCategory, tracker: tracker)
         
         let tabBarController = TabBarController.shared
@@ -422,7 +429,6 @@ extension TrackerCreationExtendedViewController: UICollectionViewDataSource {
 }
 
 extension TrackerCreationExtendedViewController: UICollectionViewDelegate {
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         for visibleIndexPath in collectionView.indexPathsForVisibleItems {
             if let cell = collectionView.cellForItem(at: visibleIndexPath) {

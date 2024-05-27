@@ -17,16 +17,30 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "TrackerCategoryStore.fetchCategoriesWithTrackersOnWeekday(_:):TrackerCategoryStore.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "category.name">
+            </PersistentString>
+            <PersistentString
+               value = "categoriesWithTrackersOnWeekday">
+            </PersistentString>
+            <PersistentString
+               value = "currentFilter">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "TrackerCreation2ViewController.updateSaveButtonAvailability(): TrackerCreation2Controller.swift">
          <PersistentStrings>
             <PersistentString
-               value = "isCategorySelected">
+               value = "isScheduleSelected">
             </PersistentString>
             <PersistentString
                value = "trackerNameTextField.text?.isEmpty">
             </PersistentString>
             <PersistentString
-               value = "isScheduleSelected">
+               value = "isCategorySelected">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -69,6 +83,9 @@
             <PersistentString
                value = "visibleTrackerCategories">
             </PersistentString>
+            <PersistentString
+               value = "presenter?.numberOfSections()">
+            </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
@@ -88,6 +105,14 @@
             </PersistentString>
             <PersistentString
                value = "date">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackerSchedule.tableView(_:cellForRowAt:):TrackerSchedule.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "selectedWeekdays">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -113,6 +138,23 @@
             <PersistentString
                value = "category">
             </PersistentString>
+            <PersistentString
+               value = "tracker.name">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackerEditViewController.init(tracker:):TrackerEditViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "selectedDays">
+            </PersistentString>
+            <PersistentString
+               value = "selectedIndexes">
+            </PersistentString>
+            <PersistentString
+               value = "schedule">
+            </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
@@ -120,6 +162,22 @@
          <PersistentStrings>
             <PersistentString
                value = "trackers">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OnboardingPageViewController.scrollViewWillEndDragging(_:withVelocity:targetContentOffset:):OnboardingPageViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "pages.count ">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackerCreationExtendedViewController.calculateTableViewHeight():TrackerCreationExtendedViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "tableView(setupTableView, heightForRowAt: indexPath)&#10;        totalHeight += height">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -135,23 +193,18 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "TrackerCreationExtendedViewController.calculateTableViewHeight():TrackerCreationExtendedViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "tableView(setupTableView, heightForRowAt: indexPath)&#10;        totalHeight += height">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "OnboardingPageViewController.scrollViewWillEndDragging(_:withVelocity:targetContentOffset:):OnboardingPageViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "pages.count ">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "TrackerRecordStore.doesRecordExist(forTrackerID:date:):TrackerRecordStore.swift">
+      </ContextState>
+      <ContextState
+         contextName = "TrackersPresenter.updateVisibleTrackerCategories(_:):TrackersPresenter.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "visibleTrackerCategories">
+            </PersistentString>
+            <PersistentString
+               value = "viewController">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "TrackerCategoryViewController.tableView(_:didSelectRowAt:):TrackerCategory.swift">
@@ -201,10 +254,24 @@
             <PersistentString
                value = "visibleTrackerCategories">
             </PersistentString>
+            <PersistentString
+               value = "presenter?.numberOfItems(in: section)">
+            </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "TrackerManager.shared.unsafeMutableAddressor:TrackerManager.swift">
+      </ContextState>
+      <ContextState
+         contextName = "TrackerCategoryStore.updateFilter(to:):TrackerCategoryStore.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "FilterOption">
+            </PersistentString>
+            <PersistentString
+               value = "currentFilter">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "TrackerRecordStore.fetchRecords(forTrackerID:date:):TrackerRecordStore.swift">
@@ -284,6 +351,14 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "TrackersViewController.isPinned(for:):TrackersController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "tracker.isPinned">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "TrackerSchedule.saveButtonTapped():TrackerSchedule.swift">
          <PersistentStrings>
             <PersistentString
@@ -291,6 +366,17 @@
             </PersistentString>
             <PersistentString
                value = "selectedWeekdays">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackersPresenter.filteredTrackersInCategory(_:for:):TrackersPresenter.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "category.name">
+            </PersistentString>
+            <PersistentString
+               value = "currentDate">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -314,10 +400,66 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "TrackersPresenter.numberOfItems(in:):TrackersPresenter.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "visibleTrackerCategories.count">
+            </PersistentString>
+            <PersistentString
+               value = "filteredTrackersInCategory(category, for: weekday).count">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackerEditViewController.viewDidLoad():TrackerEditViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "trackerToEdit">
+            </PersistentString>
+            <PersistentString
+               value = "trackerToEdit.color">
+            </PersistentString>
+            <PersistentString
+               value = "selectedEmojiIndexPath">
+            </PersistentString>
+            <PersistentString
+               value = "colors.firstIndex(where: { $0 == color }) ">
+            </PersistentString>
+            <PersistentString
+               value = "colorName.name">
+            </PersistentString>
+            <PersistentString
+               value = "$0.ciColor">
+            </PersistentString>
+            <PersistentString
+               value = "color">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in TrackersPresenter.filteredTrackersInCategory(_:for:):TrackersPresenter.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "schedule.contains(weekday) || tracker.typeTracker == 1">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "closure #1 in closure #1 in TrackersViewController.setDateForTrackers(_:):TrackersController.swift">
       </ContextState>
       <ContextState
          contextName = "TrackersViewController.updateCellUIAndButtonForVisibleCells():TrackersController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "TrackersPresenter.trackerAtIndexPath(_:):TrackersPresenter.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "category.name">
+            </PersistentString>
+            <PersistentString
+               value = "currentDate">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "kevent_id:(null)">
@@ -367,6 +509,17 @@
          <PersistentStrings>
             <PersistentString
                value = "currentDate">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TrackersPresenter.numberOfSections():TrackersPresenter.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "visibleTrackerCategories.count">
+            </PersistentString>
+            <PersistentString
+               value = "visibleTrackerCategories">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

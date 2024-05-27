@@ -10,16 +10,112 @@ protocol CategorySelectionDelegate: AnyObject {
     func didSelectCategory(_ category: String)
 }
 
-final class TrackerCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate  {
-    
+protocol TrackerCategoryContextMenuDelegate: AnyObject {
+    func editCategory(name: String)
+    func deleteCategory(name: String)
+}
+
+final class TrackerCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CategoryEditingDelegate {
+    weak var contextMenuDelegate: TrackerCategoryContextMenuDelegate?
     private var selectedIndexPath: IndexPath?
     weak var delegate: CategorySelectionDelegate?
     var selectedCategory: String = ""
     private var viewModel: TrackerCategoryViewModel!
-    private var tableView: UITableView!
+    
+    private lazy var setupTableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.separatorStyle = .singleLine
+        tableView.backgroundColor = UIColor.systemBackground
+        tableView.isScrollEnabled = true
+        tableView.showsVerticalScrollIndicator = false
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        return tableView
+    }()
+    
+    private lazy var saveButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Готово", for: .normal)
+        button.setTitleColor(UIColor.systemBackground, for: .normal)
+        button.backgroundColor = .invertedSystemBackground
+        button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Добавить категорию"
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = UIColor.systemBackground
         
-    func didSelectCategory(_ category: String) {
-        delegate?.didSelectCategory(category)
+        view.addSubview(titleLabel)
+        view.addSubview(setupTableView)
+        view.addSubview(saveButton)
+        self.contextMenuDelegate = self
+        setupConstraints()
+        setupViewModel()
+        
+        if let index = viewModel.categories.firstIndex(of: selectedCategory) {
+            selectedIndexPath = IndexPath(row: index, section: 0)
+        }
+        
+        updateCreateCategoryButtonTitle()
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            
+            setupTableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            setupTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            setupTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0),
+            
+            setupTableView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -5),
+            
+            saveButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            saveButton.heightAnchor.constraint(equalToConstant: 60)
+        ])
+    }
+    
+    private func setupViewModel() {
+        viewModel = TrackerCategoryViewModel(categoryStore: TrackerCategoryStore.shared)
+        viewModel.updateUI = { [weak self] in
+            self?.setupTableView.reloadData()
+        }
+    }
+    
+    private func updateCreateCategoryButtonTitle() {
+        if selectedCategory.isEmpty {
+            saveButton.setTitle("Создать категорию", for: .normal)
+        } else {
+            saveButton.setTitle("Готово", for: .normal)
+        }
+    }
+    
+    @objc private func saveButtonTapped() {
+        if selectedCategory.isEmpty {
+            let categoryCreationVC = CategoryCreationViewController()
+            categoryCreationVC.delegate = self
+            present(categoryCreationVC, animated: true, completion: nil)
+        } else {
+            delegate?.didSelectCategory(selectedCategory)
+            dismiss(animated: true, completion: nil)
+            navigationController?.popToRootViewController(animated: true)
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -28,7 +124,7 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-            cell.textLabel?.text = viewModel.categories[indexPath.row]
+        cell.textLabel?.text = viewModel.categories[indexPath.row]
         
         if let selectedIndexPath = selectedIndexPath, indexPath == selectedIndexPath {
             cell.accessoryType = .checkmark
@@ -37,6 +133,14 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 75
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.backgroundColor = .yBackground
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -51,105 +155,34 @@ final class TrackerCategoryViewController: UIViewController, UITableViewDataSour
         updateCreateCategoryButtonTitle()
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.backgroundColor = .yBackground
-    }
-    
-    private func updateCreateCategoryButtonTitle() {
-        if selectedCategory == "" {
-            saveButton.setTitle("Создать категорию", for: .normal)
-        } else {
-            saveButton.setTitle("Готово", for: .normal)
-        }
-    }
-    
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Добавить категорию"
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private lazy var setupTableView: UITableView = {
-        let planningTableView = UITableView(frame: .zero, style: .insetGrouped)
-        planningTableView.translatesAutoresizingMaskIntoConstraints = false
-        planningTableView.separatorStyle = .singleLine
-        planningTableView.contentInsetAdjustmentBehavior = .never
-        planningTableView.backgroundColor = .white
-        planningTableView.isScrollEnabled = true
-        planningTableView.showsVerticalScrollIndicator = false
-        planningTableView.dataSource = self
-        planningTableView.delegate = self
-        planningTableView.allowsSelection = true
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let categoryName = viewModel.categories[indexPath.row]
         
-        return planningTableView
-    }()
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 75
-    }
-    
-    private lazy var saveButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Готово", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
-        button.layer.cornerRadius = 16
-        
-        button.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-        view.addSubview(titleLabel)
-        view.addSubview(setupTableView)
-        view.addSubview(saveButton)
-            
-        
-        setupViewModel()
-        setupTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        setupConstraints()
-        updateCreateCategoryButtonTitle()
-    }
-    
-    func setupConstraints() {
-        titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        
-        setupTableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
-        setupTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
-        setupTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
-        setupTableView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -5).isActive = true
-        
-        saveButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-        saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        saveButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-    }
-    
-    @objc func saveButtonTapped() {
-        if selectedCategory.isEmpty {
-            let categoryCreationVC = CategoryCreationViewController()
-            categoryCreationVC.delegate = self
-            present(categoryCreationVC, animated: true, completion: nil)
-        } else {
-            delegate?.didSelectCategory(selectedCategory)
-            dismiss(animated: true, completion: nil)
-            if let navigationController = self.navigationController {
-                navigationController.popToRootViewController(animated: true)
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let editAction = UIAction(title: "Редактировать", image: UIImage(systemName: "pencil")) { _ in
+                self.contextMenuDelegate?.editCategory(name: categoryName)
             }
-        }
-    }
-    
-    private func setupViewModel() {
-        viewModel = TrackerCategoryViewModel(categoryStore: TrackerCategoryStore())
-        viewModel.updateUI = { [weak self] in
-            self?.setupTableView.reloadData()
+            
+            let deleteAction = UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+                let alertController = UIAlertController(
+                    title: "Удалить категорию?",
+                    message: "Вы уверены, что хотите удалить категорию \"\(categoryName)\"?",
+                    preferredStyle: .alert
+                )
+                
+                let confirmDeleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
+                    self.contextMenuDelegate?.deleteCategory(name: categoryName)
+                }
+                
+                let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+                
+                alertController.addAction(confirmDeleteAction)
+                alertController.addAction(cancelAction)
+                
+                self.present(alertController, animated: true, completion: nil)
+            }
+            
+            return UIMenu(title: "", children: [editAction, deleteAction])
         }
     }
 }
@@ -158,7 +191,28 @@ extension TrackerCategoryViewController: CategoryCreationDelegate {
     func didCreatCategory(_ category: String) {
         viewModel.createCategory(name: category)
         DispatchQueue.main.async { [weak self] in
-               self?.setupTableView.reloadData()
-           }
+            self?.setupTableView.reloadData()
+        }
+    }
+    
+    func didEditCategory(oldCategory: String, newCategory: String) {
+        viewModel.editCategory(oldCategory: oldCategory, newCategory: newCategory)
+        selectedCategory = newCategory
+        setupTableView.reloadData()
+    }
+}
+
+extension TrackerCategoryViewController: TrackerCategoryContextMenuDelegate {
+    func editCategory(name: String) {
+        let editingVC = CategoryEditingViewController()
+        editingVC.editDelegate = self
+        editingVC.configureWithCategoryName(name)
+        editingVC.modalPresentationStyle = .formSheet
+        present(editingVC, animated: true, completion: nil)
+    }
+    
+    func deleteCategory(name: String) {
+        viewModel.deleteCategory(name: name)
+        setupTableView.reloadData()
     }
 }

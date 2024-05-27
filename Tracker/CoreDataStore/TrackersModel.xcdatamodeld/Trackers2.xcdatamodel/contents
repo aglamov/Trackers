@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23E224" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="TrackersCategoryCoreData" representedClassName="TrackersCategoryCoreData" syncable="YES" codeGenerationType="class">
+        <attribute name="dataCreation" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="trackers" toMany="YES" deletionRule="Nullify" destinationEntity="TrackersCoreData" inverseName="trackerCategorys" inverseEntity="TrackersCoreData"/>
     </entity>
@@ -8,12 +10,13 @@
         <attribute name="color" attributeType="Transformable" valueTransformerName="ColorTransformer"/>
         <attribute name="emoji" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="isPinned" attributeType="Boolean" usesScalarValueType="NO"/>
+        <attribute name="isPinned" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
+        <attribute name="originalCategoryID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="schedule" attributeType="Transformable"/>
         <attribute name="typeTracker" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="trackerCategorys" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TrackersCategoryCoreData" inverseName="trackers" inverseEntity="TrackersCategoryCoreData"/>
-        <relationship name="trackerRecords" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackersRecordCoreData" inverseName="trackers" inverseEntity="TrackersRecordCoreData"/>
+        <relationship name="trackerRecords" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TrackersRecordCoreData" inverseName="trackers" inverseEntity="TrackersRecordCoreData"/>
     </entity>
     <entity name="TrackersRecordCoreData" representedClassName="TrackersRecordCoreData" syncable="YES" codeGenerationType="class">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
