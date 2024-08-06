@@ -9,12 +9,19 @@ import UIKit
 
 protocol TrackerCellDelegate: AnyObject {
     func doneButtonTapped(in cell: TrackerCell)
+    func isPinned(for cell: TrackerCell) -> Bool
+    func editMenuItemTapped(for cell: TrackerCell)
 }
 
 class TrackerCell: UICollectionViewCell {
     weak var delegate: TrackerCellDelegate?
+    weak var presenter: TrackersPresenterProtocol?
     var id: UUID?
     var currentDate: Date?
+    let analytics = AnalyticsService()
+    private let daysTitle: String = NSLocalizedString("days_title", comment: "Title for the days")
+    private var localizedTitle: String!
+
     
     let containerView: UIView = {
         let view = UIView()
@@ -50,9 +57,9 @@ class TrackerCell: UICollectionViewCell {
     let countLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
+        label.textColor = .invertedSystemBackground
         label.textAlignment = .left
-        label.text = "0 дней"
+       // label.text = "0 \(daysTitle)"
         return label
     }()
     
@@ -61,7 +68,7 @@ class TrackerCell: UICollectionViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 0.5 * button.bounds.size.width
         button.clipsToBounds = true
-        button.backgroundColor = .white
+        button.backgroundColor = UIColor.systemBackground
         let configuration = UIImage.SymbolConfiguration(pointSize: 24)
         let checkmarkImage = UIImage(systemName: "checkmark.circle.fill", withConfiguration: configuration)
         let preCheckmarkImage = UIImage(systemName: "plus.circle.fill", withConfiguration: configuration)
@@ -76,11 +83,14 @@ class TrackerCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(containerView)
-        contentView.addSubview(titleLabel)
+        containerView.addSubview(titleLabel)
+       // countLabel.text = "0 \(daysTitle)"
         contentView.addSubview(countLabel)
         contentView.addSubview(addButton)
         containerView.addSubview(containerEmoji)
         containerEmoji.addSubview(emoji)
+        let interaction = UIContextMenuInteraction(delegate: self)
+        containerView.addInteraction(interaction)
         
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -114,14 +124,108 @@ class TrackerCell: UICollectionViewCell {
     }
     
     func updateButtonAvailability(for date: Date) {
-            if date > Date() {
-                addButton.isEnabled = false
-            } else {
-                addButton.isEnabled = true
-            }
+        if date > Date() {
+            addButton.isEnabled = false
+        } else {
+            addButton.isEnabled = true
         }
+    }
     
     @objc func doneButtonTapped(_ sender: UIButton) {
         delegate?.doneButtonTapped(in: self)
+    }
+}
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        let identifier = NSUUID()
+        return UIContextMenuConfiguration(identifier: identifier, previewProvider: nil) { _ in
+            var pinAction: UIAction
+            let isPinned = self.delegate?.isPinned(for: self) ?? false
+            if isPinned {
+                pinAction = UIAction(title: "Открепить", image: UIImage(systemName: "pin.slash")) { _ in
+                    self.unpinMenuItemTapped(for: self)
+                }
+            } else {
+                pinAction = UIAction(title: "Закрепить", image: UIImage(systemName: "pin")) { _ in
+                    self.pinMenuItemTapped(for: self)
+                }
+            }
+            
+            let editAction = UIAction(title: "Редактировать", image: UIImage(systemName: "pencil")) { _ in
+                self.editMenuItemTapped()
+            }
+            let deleteAction = UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+                let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                
+                let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
+                    self.deleteMenuItemTapped(for: self)
+                }
+                alertController.addAction(deleteAction)
+                
+                let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+                alertController.addAction(cancelAction)
+                
+                if let viewController = self.delegate as? UIViewController {
+                    viewController.present(alertController, animated: true, completion: nil)
+                }
+            }
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        }
+    }
+    
+    private func pinMenuItemTapped(for cell: TrackerCell) {
+        let trackerStore = TrackerStore()
+        let categoryStore = TrackerCategoryStore.shared
+        
+        guard let trackerID = cell.id else {
+            return
+        }
+        
+        guard let tracker = trackerStore.fetchTracker(with: trackerID) else {
+            return
+        }
+        
+        guard let pinCategory = categoryStore.fetchCategory(with: "Закрепленные") else {
+            return
+        }
+        if let originalCategory =  tracker.trackerCategorys as? TrackersCategoryCoreData {
+            tracker.isPinned = true
+            tracker.originalCategoryID = originalCategory.id
+            tracker.trackerCategorys = pinCategory
+            trackerStore.save()
+        }
+        else {
+            print("Original category not found or is not of the expected type.")
+        }
+    }
+        
+    private func unpinMenuItemTapped(for cell: TrackerCell) {
+        let categoryStore = TrackerCategoryStore.shared
+        let trackerStore = TrackerStore()
+        
+        guard let trackerID = cell.id else {
+            return
+        }
+        
+        guard let tracker = trackerStore.fetchTracker(with: trackerID) else {return}
+        
+        guard let originalCategoryID = tracker.originalCategoryID else {return}
+        guard let originCategory = categoryStore.fetchCategoryID(with: originalCategoryID) else {return}
+       
+        tracker.trackerCategorys = originCategory
+        tracker.isPinned = false
+        trackerStore.save()
+    }
+    
+    private func editMenuItemTapped() {
+        analytics.reportButtonClick(screen: "Main", item: "edit")
+        delegate?.editMenuItemTapped(for: self)
+    }
+    
+    private func deleteMenuItemTapped(for cell: TrackerCell) {
+        guard let trackerID = self.id else { return }
+        analytics.reportButtonClick(screen: "Main", item: "delete")
+        presenter?.removeButtonTapped(trackerID: trackerID)
     }
 }

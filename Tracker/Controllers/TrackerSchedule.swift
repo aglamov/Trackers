@@ -36,15 +36,19 @@ final class TrackerSchedule: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = weekdays[indexPath.row].0
+        let weekday = weekdays[indexPath.row]
+        cell.textLabel?.text = weekday.0
         let switchView = UISwitch(frame: .zero)
-        switchView.setOn(false, animated: true)
+       
+        let isSelected = selectedWeekdays.contains { $0.1 == weekday.2 }
+        switchView.setOn(isSelected, animated: false)
         switchView.tag = indexPath.row
         switchView.onTintColor = .yBlue
         cell.accessoryView = switchView
         switchView.addTarget(self, action: #selector(switchChanged), for: .valueChanged)
         return cell
     }
+
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.backgroundColor = .yBackground
@@ -64,7 +68,7 @@ final class TrackerSchedule: UIViewController, UITableViewDataSource, UITableVie
         planningTableView.translatesAutoresizingMaskIntoConstraints = false
         planningTableView.separatorStyle = .singleLine
         planningTableView.contentInsetAdjustmentBehavior = .never
-        planningTableView.backgroundColor = .white
+        planningTableView.backgroundColor = UIColor.systemBackground
         planningTableView.isScrollEnabled = true
         planningTableView.showsVerticalScrollIndicator = false
         planningTableView.dataSource = self
@@ -81,8 +85,8 @@ final class TrackerSchedule: UIViewController, UITableViewDataSource, UITableVie
     private lazy var saveButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
+        button.setTitleColor(UIColor.systemBackground, for: .normal)
+        button.backgroundColor = .invertedSystemBackground
         button.layer.cornerRadius = 16
         
         button.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
@@ -92,7 +96,7 @@ final class TrackerSchedule: UIViewController, UITableViewDataSource, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
         view.addSubview(titleLabel)
         view.addSubview(setupTableView)
         view.addSubview(saveButton)
